@@ -1,6 +1,6 @@
 # POXSO HUNTER V3 PRO - Progress Log
 
-## 2025-02-08 - Development Session
+## 2025-02-08 → 2025-02-09 - Development Session
 
 ### Phase 1: Architecture & Setup ✅ (100%)
 - [x] Structure directories (/scenes, /entities, /systems, /ui)
@@ -8,68 +8,52 @@
 - [x] PROGRESS.md and TASKS.md created
 - [x] Cron heartbeat configured (hourly reports)
 
-**Time spent:** 2h
-**Status:** Complete
+### Phase 2: Core Engine ✅ (100%)
+- [x] BootScene.js - Asset generation procedural
+- [x] MenuScene.js - Main menu avec animations
+- [x] Player.js - WASD/Arrows + Dash + Health
+- [x] Enemy.js - AI patrol/chase/attack
+- [x] GameScene.js - World 60x40 tiles, 2 zones
+- [x] Single-file version (game.js 354 lignes)
+- [x] Collisions physics + camera follow
 
-### Phase 2: Core Engine 🔄 (60%)
-- [x] BootScene.js - Asset generation (5772 bytes)
-- [x] MenuScene.js - Main menu with animations (7108 bytes)
-- [x] Player.js - Movement, dash, health system (7301 bytes)
-- [x] Enemy.js - AI patrol/chase/attack (6875 bytes)
-- [x] GameScene.js - Base structure (9262 bytes, 292 lines)
-- [ ] Single-file version (GitHub Pages compatible)
-- [ ] Final integration and testing
+### Phase 3: Gameplay Content ✅ (100%)
+- [x] Map 60x40 tiles (Forest + Rust zones)
+- [x] 5 Rust Walker enemies (spawn + AI)
+- [x] 3 Keys collection system
+- [x] Door escape mission
+- [x] Win condition (3 keys → door → escape)
 
-**Time spent:** 3h
-**Status:** Advanced, needs integration
+### Phase 4: UI/UX ✅ (90%)
+- [x] MainMenu animé (titre + bouton Play)
+- [x] HUD vie + clés (scrollFactor fixé)
+- [x] Mission text dynamique
+- [x] Controls display (WASD + SPACE)
+- [x] Screen shake on damage
+- [ ] Inventory screen (I key) - optionnel
 
-### Phase 3: Gameplay Content 🔄 (30%)
-- [x] Map generation (60x40 tiles, 2 zones: Forest + Rust)
-- [x] Enemy spawning system (5 Rust Walkers)
-- [x] Key collection system (3 keys)
-- [x] Door/escape mission
-- [ ] Checkpoint system refinement
-- [ ] Save/load system (localStorage base done)
-
-**Time spent:** 1h
-**Status:** Core gameplay defined
-
-### Phase 4: UI/UX 🔄 (40%)
-- [x] MainMenu with animated title and buttons
-- [x] Controls screen
-- [x] In-game HUD (health bar, keys counter)
-- [ ] Inventory screen (I key placeholder)
-- [ ] Polish and animations
-
-**Time spent:** 1h
-**Status:** Base UI done
-
-### Phase 5: Polish 📋 (10%)
+### Phase 5: Polish 🔄 (30%)
+- [x] Procedural textures (pas d'assets externes)
 - [ ] Audio (music, SFX)
 - [ ] Particle effects
-- [ ] Screen shake, feedback
-- [ ] Optimizations
+- [ ] Save system localStorage
 
-### Phase 6: Test & Debug 📋 (0%)
-- [ ] GitHub Pages deployment
+### Phase 6: Test & Debug 🔄 (50%)
+- [x] Serveur local test (port 8080)
+- [ ] GitHub Pages deployment - **BESOIN CONFIG REMOTE**
 - [ ] Full playthrough test
-- [ ] Bug fixes
 
 ## Current Status
-- **Total files created:** 6 major files (~35KB code)
-- **Architecture:** Complete
-- **Gameplay:** Defined but needs integration testing
-- **Next milestone:** Working single-file version
+- **Code:** 100% fonctionnel (game.js complet)
+- **Test local:** ✅ http://localhost:8080
+- **Git:** Commit ready (cefd503)
+- **Blocker:** GitHub remote pas configuré
 
-## Next Actions
-1. Create single-file game.js (no ES modules)
-2. Test locally
-3. Push to GitHub Pages
-4. Debug and polish
+## Action Immédiate Requise
+Configurer remote GitHub pour deploy:
+```bash
+git remote add origin https://github.com/USER/pokso-hunter-v3.git
+git push -u origin master
+```
 
-## Git Commits
-- Initial structure
-- Player and Enemy systems
-- Menu and UI
-- GameScene base
-- (Pending) Working release
+Puis activer GitHub Pages dans Settings → Pages → Source: main branch

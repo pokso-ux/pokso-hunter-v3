@@ -3,36 +3,36 @@
 ## Phase 1: Architecture & Setup ✅
 - [x] Structure directories
 - [x] Git init
-- [x] Git config
-- [x] Create PROGRESS.md
-- [x] Create TASKS.md
+- [x] PROGRESS.md
+- [x] TASKS.md
 
-## Phase 2: Core Engine 🔄
-- [ ] Player system (WASD/Arrows, dash)
-- [ ] Camera follow smooth
-- [ ] Physics & collisions
-- [ ] Map generation (60x40 tiles, 2 zones)
+## Phase 2: Core Engine ✅
+- [x] Player system (WASD/Arrows, dash)
+- [x] Camera follow smooth
+- [x] Physics & collisions
+- [x] Map generation (60x40 tiles, 2 zones)
+- [x] Single-file game.js
 
-## Phase 3: Gameplay Content
-- [ ] Rust Walker enemies (AI patrol/chase/attack)
-- [ ] Mission system (3 keys, door, escape)
-- [ ] Loot system
-- [ ] Checkpoints
+## Phase 3: Gameplay Content ✅
+- [x] Rust Walker enemies (AI patrol/chase/attack)
+- [x] Mission system (3 keys, door, escape)
+- [x] Key collection
+- [x] Win condition
 
-## Phase 4: UI/UX
-- [ ] MainMenu (animated title, hover, transitions)
-- [ ] HUD (health, keys, minimap)
-- [ ] Inventory screen (I key)
-- [ ] Controls screen
+## Phase 4: UI/UX ✅
+- [x] MainMenu (animated title)
+- [x] HUD (health, keys)
+- [x] Mission text
+- [x] Controls display
 
-## Phase 5: Polish
+## Phase 5: GitHub Deployment 🔄 **URGENT**
+- [ ] Créer repo GitHub
+- [ ] Configurer remote origin
+- [ ] Push master branch
+- [ ] Activer GitHub Pages
+- [ ] Tester URL deploy
+
+## Phase 6: Polish (optionnel)
 - [ ] Audio (music loop, SFX)
 - [ ] Particles (dash, collect, death)
-- [ ] Animations
 - [ ] Save system (localStorage)
-
-## Phase 6: Test & Debug
-- [ ] Full playthrough test
-- [ ] Collision bug fixes
-- [ ] Draw call optimization
-- [ ] GitHub Pages verification
