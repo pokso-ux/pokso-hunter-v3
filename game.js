@@ -54,12 +54,6 @@ window.addEventListener('DOMContentLoaded', function() {
         const player = new BABYLON.TransformNode("player", scene);
         player.position.y = 1;
         
-        // Ajouter ombres au joueur
-        shadowGenerator.addShadowCaster(body);
-        shadowGenerator.addShadowCaster(head);
-        shadowGenerator.addShadowCaster(leftHand);
-        shadowGenerator.addShadowCaster(rightHand);
-        
         // Corps cyan
         const body = BABYLON.MeshBuilder.CreateBox("body", {size: 1.5}, scene);
         body.parent = player;
@@ -68,6 +62,7 @@ window.addEventListener('DOMContentLoaded', function() {
         bodyMat.diffuseColor = new BABYLON.Color3(0, 0.83, 1);
         bodyMat.emissiveColor = new BABYLON.Color3(0, 0.3, 0.4);
         body.material = bodyMat;
+        shadowGenerator.addShadowCaster(body);
         
         // Tête violette
         const head = BABYLON.MeshBuilder.CreateBox("head", {size: 1}, scene);
@@ -77,6 +72,7 @@ window.addEventListener('DOMContentLoaded', function() {
         headMat.diffuseColor = new BABYLON.Color3(0.6, 0.2, 1);
         headMat.emissiveColor = new BABYLON.Color3(0.2, 0.05, 0.3);
         head.material = headMat;
+        shadowGenerator.addShadowCaster(head);
         
         // Yeux roses
         const leftEye = BABYLON.MeshBuilder.CreateSphere("leftEye", {diameter: 0.3}, scene);
@@ -98,10 +94,12 @@ window.addEventListener('DOMContentLoaded', function() {
         const handMat = new BABYLON.StandardMaterial("handMat", scene);
         handMat.diffuseColor = new BABYLON.Color3(1, 0.8, 0);
         leftHand.material = handMat;
+        shadowGenerator.addShadowCaster(leftHand);
         
         const rightHand = leftHand.clone("rightHand");
         rightHand.parent = player;
         rightHand.position = new BABYLON.Vector3(1, 0.8, 0);
+        shadowGenerator.addShadowCaster(rightHand);
         
         // ========== SOL (Zones Forest + Rust) ==========
         const ground = BABYLON.MeshBuilder.CreateGround("ground", {width: 60, height: 40}, scene);
