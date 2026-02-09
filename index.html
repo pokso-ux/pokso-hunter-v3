@@ -3,29 +3,30 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>POXSO HUNTER V3 PRO</title>
+    <title>POXSO HUNTER V3 PRO - 3D</title>
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
-        body {
-            background: #0a0a0a;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            font-family: 'Courier New', monospace;
+        html, body {
+            width: 100%;
+            height: 100%;
             overflow: hidden;
+            background: #0a0a0f;
+            font-family: 'Courier New', monospace;
         }
         #game-container {
+            width: 100%;
+            height: 100%;
             position: relative;
-            box-shadow: 0 0 50px rgba(0, 255, 255, 0.3);
-            border: 2px solid #00ffff;
         }
         canvas {
             display: block;
+            width: 100% !important;
+            height: 100% !important;
+            outline: none;
         }
         #loading {
             position: absolute;
@@ -36,22 +37,43 @@
             font-size: 24px;
             text-align: center;
             text-shadow: 0 0 10px #00ffff;
+            z-index: 10;
+            pointer-events: none;
+        }
+        #ui {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 5;
+        }
+        #controls {
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            color: #00ff88;
+            font-size: 14px;
+            text-shadow: 0 0 5px #00ff88;
         }
     </style>
 </head>
 <body>
     <div id="game-container">
-        <div id="loading">INITIALIZING POXSO HUNTER V3 PRO...</div>
+        <div id="loading">INITIALIZING POXSO HUNTER V3 PRO 3D...</div>
     </div>
-    <script src="https://cdn.jsdelivr.net/npm/phaser@3.60.0/dist/phaser.min.js"></script>
+    <div id="ui">
+        <div id="controls">WASD/Arrows: Move | SPACE: Dash</div>
+    </div>
+    <script src="https://cdn.babylonjs.com/babylon.js"></script>
     <script src="game.js"></script>
     <script>
-        // Cacher le loading quand Phaser est prêt
         window.addEventListener('load', function() {
             setTimeout(function() {
                 var loading = document.getElementById('loading');
                 if(loading) loading.style.display = 'none';
-            }, 1000);
+            }, 2000);
         });
     </script>
 </body>
