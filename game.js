@@ -53,6 +53,12 @@ window.addEventListener('DOMContentLoaded', function() {
         const player = new BABYLON.TransformNode("player", scene);
         player.position.y = 1;
         
+        // Ajouter ombres au joueur
+        shadowGenerator.addShadowCaster(body);
+        shadowGenerator.addShadowCaster(head);
+        shadowGenerator.addShadowCaster(leftHand);
+        shadowGenerator.addShadowCaster(rightHand);
+        
         // Corps cyan
         const body = BABYLON.MeshBuilder.CreateBox("body", {size: 1.5}, scene);
         body.parent = player;
@@ -123,6 +129,7 @@ window.addEventListener('DOMContentLoaded', function() {
         groundTexture.update();
         groundMat.diffuseTexture = groundTexture;
         ground.material = groundMat;
+        ground.receiveShadows = true;
         
         // ========== MURS (Style Voxel) ==========
         const wallMat = new BABYLON.StandardMaterial("wallMat", scene);
@@ -147,33 +154,135 @@ window.addEventListener('DOMContentLoaded', function() {
         createWall(0, -10, 20, 2);
         createWall(0, 10, 20, 2);
         
-        // ========== CLÉS (Coffres Dorés) ==========
+        // ========== ARBRES 3D ==========
+        function createTree(x, z) {
+            const treeGroup = new BABYLON.TransformNode("tree", scene);
+            treeGroup.position = new BABYLON.Vector3(x, 0, z);
+            
+            // Tronc
+            const trunk = BABYLON.MeshBuilder.CreateCylinder("trunk", {height: 2, diameter: 0.6}, scene);
+            trunk.parent = treeGroup;
+            trunk.position.y = 1;
+            const trunkMat = new BABYLON.StandardMaterial("trunkMat", scene);
+            trunkMat.diffuseColor = new BABYLON.Color3(0.4, 0.25, 0.1);
+            trunk.material = trunkMat;
+            shadowGenerator.addShadowCaster(trunk);
+            
+            // Feuillage - 3 cônes empilés
+            const leavesMat = new BABYLON.StandardMaterial("leavesMat", scene);
+            leavesMat.diffuseColor = new BABYLON.Color3(0.1, 0.6, 0.2);
+            leavesMat.emissiveColor = new BABYLON.Color3(0, 0.2, 0.1);
+            
+            const leaves1 = BABYLON.MeshBuilder.CreateCylinder("leaves1", {height: 1.5, diameterTop: 0, diameterBottom: 2.5}, scene);
+            leaves1.parent = treeGroup;
+            leaves1.position.y = 2.5;
+            leaves1.material = leavesMat;
+            shadowGenerator.addShadowCaster(leaves1);
+            
+            const leaves2 = BABYLON.MeshBuilder.CreateCylinder("leaves2", {height: 1.2, diameterTop: 0, diameterBottom: 2}, scene);
+            leaves2.parent = treeGroup;
+            leaves2.position.y = 3.2;
+            leaves2.material = leavesMat;
+            shadowGenerator.addShadowCaster(leaves2);
+            
+            const leaves3 = BABYLON.MeshBuilder.CreateCylinder("leaves3", {height: 1, diameterTop: 0, diameterBottom: 1.5}, scene);
+            leaves3.parent = treeGroup;
+            leaves3.position.y = 3.8;
+            leaves3.material = leavesMat;
+            shadowGenerator.addShadowCaster(leaves3);
+        }
+        
+        // Ajouter des arbres dans la zone forest
+        createTree(-25, -15);
+        createTree(-22, 12);
+        createTree(-18, -8);
+        createTree(-12, 16);
+        createTree(-8, -12);
+        createTree(-5, 8);
+        
+        // ========== ROCHERS ==========
+        function createRock(x, z, scale) {
+            const rock = BABYLON.MeshBuilder.CreateSphere("rock", {diameter: 1, segments: 6}, scene);
+            rock.position = new BABYLON.Vector3(x, 0.3 * scale, z);
+            rock.scaling = new BABYLON.Vector3(scale, scale * 0.6, scale);
+            rock.rotation = new BABYLON.Vector3(Math.random(), Math.random(), Math.random());
+            
+            const rockMat = new BABYLON.StandardMaterial("rockMat", scene);
+            rockMat.diffuseColor = new BABYLON.Color3(0.4, 0.4, 0.45);
+            rock.material = rockMat;
+            shadowGenerator.addShadowCaster(rock);
+        }
+        
+        // Ajouter des rochers
+        createRock(-28, -5, 1.2);
+        createRock(-26, 5, 0.8);
+        createRock(5, -18, 1.5);
+        createRock(10, 15, 1);
+        createRock(20, -12, 0.9);
+        
+        // ========== CLÉS AMÉLIORÉES (Gemmes 3D) ==========
         const keys = [];
         const keyPositions = [
-            new BABYLON.Vector3(-20, 0.5, -10),
-            new BABYLON.Vector3(20, 0.5, -10),
-            new BABYLON.Vector3(0, 0.5, 15)
+            new BABYLON.Vector3(-20, 1, -10),
+            new BABYLON.Vector3(20, 1, -10),
+            new BABYLON.Vector3(0, 1, 15)
         ];
         
         keyPositions.forEach((pos, i) => {
-            const chest = BABYLON.MeshBuilder.CreateBox("key" + i, {width: 0.8, height: 0.6, depth: 0.6}, scene);
-            chest.position = pos;
-            chest.position.y = 0.5;
-            const chestMat = new BABYLON.StandardMaterial("chestMat", scene);
-            chestMat.diffuseColor = new BABYLON.Color3(1, 0.8, 0);
-            chestMat.emissiveColor = new BABYLON.Color3(0.5, 0.4, 0);
-            chest.material = chestMat;
-            keys.push(chest);
+            const gemGroup = new BABYLON.TransformNode("gem" + i, scene);
+            gemGroup.position = pos;
             
-            // Animation flottante
-            const anim = new BABYLON.Animation("float", "position.y", 30, BABYLON.Animation.ANIMATIONTYPE_FLOAT, BABYLON.Animation.ANIMATIONLOOPMODE_CYCLE);
-            const keysAnim = [];
-            keysAnim.push({frame: 0, value: 0.5});
-            keysAnim.push({frame: 30, value: 0.8});
-            keysAnim.push({frame: 60, value: 0.5});
-            anim.setKeys(keysAnim);
-            chest.animations.push(anim);
-            scene.beginAnimation(chest, 0, 60, true);
+            // Gemme centrale (octaèdre)
+            const gem = BABYLON.MeshBuilder.CreatePolyhedron("gem" + i, {type: 1, size: 0.4}, scene);
+            gem.parent = gemGroup;
+            const gemMat = new BABYLON.StandardMaterial("gemMat" + i, scene);
+            gemMat.diffuseColor = new BABYLON.Color3(1, 0.8, 0);
+            gemMat.emissiveColor = new BABYLON.Color3(0.8, 0.6, 0);
+            gemMat.specularColor = new BABYLON.Color3(1, 1, 1);
+            gemMat.alpha = 0.9;
+            gem.material = gemMat;
+            
+            // Halo lumineux
+            const halo = BABYLON.MeshBuilder.CreateSphere("halo" + i, {diameter: 1.2}, scene);
+            halo.parent = gemGroup;
+            const haloMat = new BABYLON.StandardMaterial("haloMat" + i, scene);
+            haloMat.emissiveColor = new BABYLON.Color3(1, 0.8, 0);
+            haloMat.alpha = 0.2;
+            halo.material = haloMat;
+            
+            // Particules flottantes autour
+            for(let j = 0; j < 5; j++) {
+                const particle = BABYLON.MeshBuilder.CreateSphere("p" + j, {diameter: 0.1}, scene);
+                particle.parent = gemGroup;
+                particle.position = new BABYLON.Vector3(
+                    Math.cos(j * 1.2) * 0.6,
+                    Math.sin(j * 1.5) * 0.3,
+                    Math.sin(j * 1.2) * 0.6
+                );
+                const pMat = new BABYLON.StandardMaterial("pMat" + j, scene);
+                pMat.emissiveColor = new BABYLON.Color3(1, 0.9, 0.5);
+                particle.material = pMat;
+            }
+            
+            keys.push({mesh: gem, group: gemGroup});
+            
+            // Animation rotation + flottement
+            const rotAnim = new BABYLON.Animation("rot", "rotation.y", 30, BABYLON.Animation.ANIMATIONTYPE_FLOAT, BABYLON.Animation.ANIMATIONLOOPMODE_CYCLE);
+            const rotKeys = [];
+            rotKeys.push({frame: 0, value: 0});
+            rotKeys.push({frame: 60, value: Math.PI * 2});
+            rotAnim.setKeys(rotKeys);
+            gemGroup.animations.push(rotAnim);
+            scene.beginAnimation(gemGroup, 0, 60, true);
+            
+            const floatAnim = new BABYLON.Animation("float", "position.y", 30, BABYLON.Animation.ANIMATIONTYPE_FLOAT, BABYLON.Animation.ANIMATIONLOOPMODE_CYCLE);
+            const floatKeys = [];
+            floatKeys.push({frame: 0, value: 1});
+            floatKeys.push({frame: 30, value: 1.3});
+            floatKeys.push({frame: 60, value: 1});
+            floatAnim.setKeys(floatKeys);
+            gemGroup.animations.push(floatAnim);
+            scene.beginAnimation(gemGroup, 0, 60, true);
         });
         
         // ========== PORTE ==========
@@ -187,6 +296,86 @@ window.addEventListener('DOMContentLoaded', function() {
         const doorLight = new BABYLON.PointLight("doorLight", new BABYLON.Vector3(25, 3, 2), scene);
         doorLight.diffuse = new BABYLON.Color3(1, 0, 0);
         doorLight.intensity = 0.5;
+        
+        // ========== ARBRES 3D ==========
+        function createTree(x, z) {
+            const tree = new BABYLON.TransformNode("tree", scene);
+            tree.position = new BABYLON.Vector3(x, 0, z);
+            
+            // Tronc
+            const trunk = BABYLON.MeshBuilder.CreateCylinder("trunk", {height: 2, diameter: 0.4}, scene);
+            trunk.parent = tree;
+            trunk.position.y = 1;
+            const trunkMat = new BABYLON.StandardMaterial("trunkMat", scene);
+            trunkMat.diffuseColor = new BABYLON.Color3(0.4, 0.25, 0.1);
+            trunk.material = trunkMat;
+            shadowGenerator.addShadowCaster(trunk);
+            
+            // Feuillage (3 cônes)
+            const leavesMat = new BABYLON.StandardMaterial("leavesMat", scene);
+            leavesMat.diffuseColor = new BABYLON.Color3(0.1, 0.6, 0.2);
+            leavesMat.emissiveColor = new BABYLON.Color3(0, 0.2, 0.1);
+            
+            const leaves1 = BABYLON.MeshBuilder.CreateCylinder("leaves1", {height: 1.5, diameterTop: 0, diameterBottom: 2}, scene);
+            leaves1.parent = tree;
+            leaves1.position.y = 2.5;
+            leaves1.material = leavesMat;
+            shadowGenerator.addShadowCaster(leaves1);
+            
+            const leaves2 = BABYLON.MeshBuilder.CreateCylinder("leaves2", {height: 1.2, diameterTop: 0, diameterBottom: 1.6}, scene);
+            leaves2.parent = tree;
+            leaves2.position.y = 3.2;
+            leaves2.material = leavesMat;
+            shadowGenerator.addShadowCaster(leaves2);
+            
+            const leaves3 = BABYLON.MeshBuilder.CreateCylinder("leaves3", {height: 1, diameterTop: 0, diameterBottom: 1.2}, scene);
+            leaves3.parent = tree;
+            leaves3.position.y = 3.8;
+            leaves3.material = leavesMat;
+            shadowGenerator.addShadowCaster(leaves3);
+        }
+        
+        // Placer des arbres dans la zone Forest
+        for(let i = 0; i < 15; i++) {
+            const x = -25 + Math.random() * 20;
+            const z = -15 + Math.random() * 30;
+            createTree(x, z);
+        }
+        
+        // ========== ROCHERS ==========
+        function createRock(x, z) {
+            const rock = BABYLON.MeshBuilder.CreateSphere("rock", {diameter: 1 + Math.random()}, scene);
+            rock.position = new BABYLON.Vector3(x, 0.3, z);
+            rock.scaling = new BABYLON.Vector3(1 + Math.random() * 0.5, 0.6, 1 + Math.random() * 0.5);
+            const rockMat = new BABYLON.StandardMaterial("rockMat", scene);
+            rockMat.diffuseColor = new BABYLON.Color3(0.4, 0.4, 0.45);
+            rock.material = rockMat;
+            shadowGenerator.addShadowCaster(rock);
+        }
+        
+        // Placer des rochers
+        for(let i = 0; i < 10; i++) {
+            const x = -28 + Math.random() * 56;
+            const z = -18 + Math.random() * 36;
+            createRock(x, z);
+        }
+        
+        // ========== PARTICULES AMBIANCE ==========
+        const particleSystem = new BABYLON.ParticleSystem("particles", 2000, scene);
+        particleSystem.particleTexture = new BABYLON.Texture("https://www.babylonjs-playground.com/textures/flare.png", scene);
+        particleSystem.emitter = new BABYLON.Vector3(0, 5, 0);
+        particleSystem.minEmitBox = new BABYLON.Vector3(-30, 0, -20);
+        particleSystem.maxEmitBox = new BABYLON.Vector3(30, 10, 20);
+        particleSystem.color1 = new BABYLON.Color4(0.2, 0.8, 1, 0.3);
+        particleSystem.color2 = new BABYLON.Color4(0.1, 0.5, 0.8, 0.2);
+        particleSystem.colorDead = new BABYLON.Color4(0, 0, 0, 0);
+        particleSystem.minSize = 0.05;
+        particleSystem.maxSize = 0.15;
+        particleSystem.minLifeTime = 2;
+        particleSystem.maxLifeTime = 5;
+        particleSystem.emitRate = 50;
+        particleSystem.gravity = new BABYLON.Vector3(0, 0.5, 0);
+        particleSystem.start();
         
         // ========== ENNEMIS ==========
         const enemies = [];
@@ -214,10 +403,17 @@ window.addEventListener('DOMContentLoaded', function() {
             eEyeMat.emissiveColor = new BABYLON.Color3(1, 0, 0);
             enemyEye.material = eEyeMat;
             
+            // Ajouter ombres
+            shadowGenerator.addShadowCaster(enemyBody);
+            
             enemies.push({
                 mesh: enemy,
+                body: enemyBody,
                 startPos: enemy.position.clone(),
-                direction: 1
+                direction: 1,
+                speed: 0.03 + Math.random() * 0.02,
+                chaseRange: 10,
+                isChasing: false
             });
         }
         
@@ -231,10 +427,55 @@ window.addEventListener('DOMContentLoaded', function() {
             inputMap[evt.sourceEvent.key.toLowerCase()] = false;
         }));
         
+        // ========== HUD ==========
+        const advancedTexture = BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI("UI");
+        
+        // Barre de vie
+        const healthBar = new BABYLON.GUI.Rectangle();
+        healthBar.width = "200px";
+        healthBar.height = "20px";
+        healthBar.cornerRadius = 10;
+        healthBar.color = "#00ff88";
+        healthBar.thickness = 2;
+        healthBar.background = "#000000";
+        healthBar.horizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_LEFT;
+        healthBar.verticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_TOP;
+        healthBar.left = "20px";
+        healthBar.top = "20px";
+        advancedTexture.addControl(healthBar);
+        
+        const healthFill = new BABYLON.GUI.Rectangle();
+        healthFill.width = "100%";
+        healthFill.height = "100%";
+        healthFill.background = "#00ff88";
+        healthFill.horizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_LEFT;
+        healthBar.addControl(healthFill);
+        
+        const healthText = new BABYLON.GUI.TextBlock();
+        healthText.text = "HP: 100";
+        healthText.color = "white";
+        healthText.fontSize = 14;
+        healthBar.addControl(healthText);
+        
+        // Compteur de clés
+        const keysText = new BABYLON.GUI.TextBlock();
+        keysText.text = "Keys: 0/3";
+        keysText.color = "#ffcc00";
+        keysText.fontSize = 20;
+        keysText.fontWeight = "bold";
+        keysText.shadowColor = "#ffaa00";
+        keysText.shadowBlur = 10;
+        keysText.horizontalAlignment = BABYLON.GUI.Control.HORIZONTAL_ALIGNMENT_LEFT;
+        keysText.verticalAlignment = BABYLON.GUI.Control.VERTICAL_ALIGNMENT_TOP;
+        keysText.left = "20px";
+        keysText.top = "50px";
+        advancedTexture.addControl(keysText);
+        
         // ========== GAME LOOP ==========
         let playerSpeed = 0.15;
         let keysCollected = 0;
         let canDash = true;
+        let playerHealth = 100;
         
         scene.registerBeforeRender(function() {
             // Mouvement joueur
@@ -279,17 +520,32 @@ window.addEventListener('DOMContentLoaded', function() {
             // Caméra suit joueur
             camera.target = player.position;
             
-            // Animation ennemis
+            // Animation ennemis avec IA améliorée
             enemies.forEach(enemy => {
-                enemy.mesh.position.x += 0.02 * enemy.direction;
-                if(Math.abs(enemy.mesh.position.x - enemy.startPos.x) > 5) {
-                    enemy.direction *= -1;
+                const distToPlayer = BABYLON.Vector3.Distance(enemy.mesh.position, player.position);
+                
+                if(distToPlayer < enemy.chaseRange) {
+                    // Mode poursuite
+                    enemy.isChasing = true;
+                    const chaseDir = player.position.subtract(enemy.mesh.position).normalize();
+                    enemy.mesh.position.addInPlace(chaseDir.scale(enemy.speed * 2));
+                    enemy.mesh.lookAt(player.position);
+                    
+                    // Animation marche
+                    enemy.body.rotation.z = Math.sin(Date.now() * 0.015) * 0.15;
+                } else {
+                    // Mode patrouille
+                    enemy.isChasing = false;
+                    enemy.mesh.position.x += enemy.speed * enemy.direction;
+                    if(Math.abs(enemy.mesh.position.x - enemy.startPos.x) > 5) {
+                        enemy.direction *= -1;
+                    }
+                    enemy.mesh.lookAt(new BABYLON.Vector3(
+                        enemy.mesh.position.x + enemy.direction,
+                        enemy.mesh.position.y,
+                        enemy.mesh.position.z
+                    ));
                 }
-                enemy.mesh.lookAt(new BABYLON.Vector3(
-                    enemy.mesh.position.x + enemy.direction,
-                    enemy.mesh.position.y,
-                    enemy.mesh.position.z
-                ));
             });
             
             // Collecte clés
@@ -308,8 +564,13 @@ window.addEventListener('DOMContentLoaded', function() {
                     flash.material = flashMat;
                     setTimeout(() => flash.dispose(), 200);
                     
+                    // Mise à jour HUD
+                    keysText.text = "Keys: " + keysCollected + "/3";
+                    
                     if(keysCollected >= 3) {
                         doorLight.diffuse = new BABYLON.Color3(0, 1, 0);
+                        keysText.text = "DOOR OPEN!";
+                        keysText.color = "#00ff00";
                     }
                 }
             });
