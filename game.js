@@ -11,12 +11,12 @@ window.addEventListener('DOMContentLoaded', function() {
     
     const createScene = function() {
         const scene = new BABYLON.Scene(engine);
-        scene.clearColor = new BABYLON.Color3(0.05, 0.05, 0.1);
+        scene.clearColor = new BABYLON.Color3(0.15, 0.15, 0.25);
         
-        // Fog atmosphérique
+        // Fog atmosphérique (allégé)
         scene.fogMode = BABYLON.Scene.FOGMODE_EXP;
-        scene.fogDensity = 0.02;
-        scene.fogColor = new BABYLON.Color3(0.05, 0.05, 0.1);
+        scene.fogDensity = 0.008;
+        scene.fogColor = new BABYLON.Color3(0.15, 0.15, 0.25);
         
         // Caméra isométrique
         const camera = new BABYLON.ArcRotateCamera("camera", -Math.PI / 2, Math.PI / 3, 25, BABYLON.Vector3.Zero(), scene);
@@ -26,8 +26,9 @@ window.addEventListener('DOMContentLoaded', function() {
         
         // Lumières
         const hemiLight = new BABYLON.HemisphericLight("hemi", new BABYLON.Vector3(0, 1, 0), scene);
-        hemiLight.intensity = 0.3;
-        hemiLight.diffuse = new BABYLON.Color3(0.2, 0.3, 0.5);
+        hemiLight.intensity = 0.8;
+        hemiLight.diffuse = new BABYLON.Color3(0.4, 0.5, 0.7);
+        hemiLight.groundColor = new BABYLON.Color3(0.2, 0.2, 0.3);
         
         // Glow layer pour effet néon
         const gl = new BABYLON.GlowLayer("glow", scene);
