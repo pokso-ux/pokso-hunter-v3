@@ -9,52 +9,259 @@ class BootScene extends Phaser.Scene {
     preload() {
         const g = this.make.graphics();
         
-        // Player
-        g.fillStyle(0x00ff41);
+        // ========== PLAYER AVANCÉ (Cyberpunk Ninja) ==========
+        // Corps avec dégradé néon
+        const playerGrad = g.createLinearGradient(0, 0, 32, 32);
+        playerGrad.addColorStop(0, 0x00ff88);
+        playerGrad.addColorStop(0.5, 0x00aa44);
+        playerGrad.addColorStop(1, 0x006622);
+        g.fillStyle(playerGrad, 1);
         g.fillCircle(16, 16, 14);
-        g.fillStyle(0xffffff);
-        g.fillCircle(12, 12, 4);
+        
+        // Armure/casque
+        g.fillStyle(0x00ffcc, 0.8);
+        g.fillCircle(16, 14, 10);
+        
+        // Visor néon
+        g.fillStyle(0x00ffff, 1);
+        g.fillEllipse(16, 13, 14, 6);
+        
+        // Lueur visor
+        g.fillStyle(0xffffff, 0.6);
+        g.fillEllipse(16, 12, 8, 3);
+        
+        // Épaulettes
+        g.fillStyle(0x0088aa, 1);
+        g.fillCircle(6, 22, 4);
+        g.fillCircle(26, 22, 4);
+        
         g.generateTexture('player', 32, 32);
         g.clear();
         
-        // Tiles
-        g.fillStyle(0x2d5a2d);
+        // ========== TILE FOREST AVANCÉ ==========
+        // Base herbe avec dégradé
+        const forestGrad = g.createRadialGradient(32, 32, 0, 32, 32, 45);
+        forestGrad.addColorStop(0, 0x3d8a3d);
+        forestGrad.addColorStop(0.7, 0x2d6a2d);
+        forestGrad.addColorStop(1, 0x1d4a1d);
+        g.fillStyle(forestGrad, 1);
         g.fillRect(0, 0, 64, 64);
+        
+        // Herbe détaillée
+        for(let i = 0; i < 15; i++) {
+            const x = Math.random() * 64;
+            const y = Math.random() * 64;
+            const h = 8 + Math.random() * 12;
+            g.fillStyle(0x4dca4d, 0.8);
+            g.fillTriangle(x, y + h, x - 2, y, x + 2, y);
+        }
+        
+        // Fleurs néon rares
+        for(let i = 0; i < 3; i++) {
+            const x = 10 + Math.random() * 44;
+            const y = 10 + Math.random() * 44;
+            g.fillStyle(0x00ff88, 0.9);
+            g.fillCircle(x, y, 3);
+            g.fillStyle(0x88ffcc, 0.6);
+            g.fillCircle(x, y, 1);
+        }
+        
         g.generateTexture('tile_forest', 64, 64);
         g.clear();
         
-        g.fillStyle(0x8b4513);
+        // ========== TILE RUST AVANCÉ ==========
+        // Base métal rouillé
+        const rustGrad = g.createLinearGradient(0, 0, 64, 64);
+        rustGrad.addColorStop(0, 0xa06030);
+        rustGrad.addColorStop(0.3, 0x8b4513);
+        rustGrad.addColorStop(0.6, 0x6b3508);
+        rustGrad.addColorStop(1, 0x5a3010);
+        g.fillStyle(rustGrad, 1);
         g.fillRect(0, 0, 64, 64);
+        
+        // Taches de rouille
+        for(let i = 0; i < 8; i++) {
+            const x = Math.random() * 64;
+            const y = Math.random() * 64;
+            const r = 5 + Math.random() * 10;
+            g.fillStyle(0x4a2000, 0.7);
+            g.fillCircle(x, y, r);
+        }
+        
+        // Rivets métalliques
+        g.fillStyle(0x888888, 1);
+        g.fillCircle(8, 8, 3);
+        g.fillCircle(56, 8, 3);
+        g.fillCircle(8, 56, 3);
+        g.fillCircle(56, 56, 3);
+        g.fillCircle(32, 32, 4);
+        
+        // Lignes de soudure
+        g.lineStyle(2, 0x3a2000, 0.8);
+        g.moveTo(0, 20);
+        g.lineTo(64, 20);
+        g.moveTo(0, 44);
+        g.lineTo(64, 44);
+        g.strokePath();
+        
         g.generateTexture('tile_rust', 64, 64);
         g.clear();
         
-        g.fillStyle(0x333333);
+        // ========== MUR AVANCÉ ==========
+        // Base mur sombre
+        const wallGrad = g.createLinearGradient(0, 0, 0, 64);
+        wallGrad.addColorStop(0, 0x444444);
+        wallGrad.addColorStop(0.5, 0x333333);
+        wallGrad.addColorStop(1, 0x222222);
+        g.fillStyle(wallGrad, 1);
         g.fillRect(0, 0, 64, 64);
-        g.lineStyle(2, 0x555555);
+        
+        // Brique pattern
+        g.lineStyle(2, 0x222222, 1);
         g.strokeRect(0, 0, 64, 64);
+        g.moveTo(32, 0);
+        g.lineTo(32, 32);
+        g.moveTo(0, 32);
+        g.lineTo(64, 32);
+        g.moveTo(16, 32);
+        g.lineTo(16, 64);
+        g.moveTo(48, 32);
+        g.lineTo(48, 64);
+        g.strokePath();
+        
+        // Effet pierre
+        for(let i = 0; i < 5; i++) {
+            const x = Math.random() * 60;
+            const y = Math.random() * 60;
+            g.fillStyle(0x555555, 0.3);
+            g.fillCircle(x, y, 8);
+        }
+        
+        // Bordure supérieure highlight
+        g.fillStyle(0x666666, 1);
+        g.fillRect(0, 0, 64, 4);
+        
         g.generateTexture('tile_wall', 64, 64);
         g.clear();
         
-        // Enemy
-        g.fillStyle(0x8b4513);
+        // ========== ENEMY AVANCÉ (Rust Walker Mécanique) ==========
+        // Corps principal mécanique
+        const enemyBodyGrad = g.createRadialGradient(16, 16, 0, 16, 16, 16);
+        enemyBodyGrad.addColorStop(0, 0xaa5533);
+        enemyBodyGrad.addColorStop(0.6, 0x8b4513);
+        enemyBodyGrad.addColorStop(1, 0x5a3010);
+        g.fillStyle(enemyBodyGrad, 1);
         g.fillCircle(16, 16, 14);
-        g.fillStyle(0xff4400);
-        g.fillCircle(16, 14, 6);
+        
+        // Plaque métallique centrale
+        g.fillStyle(0x663311, 1);
+        g.fillEllipse(16, 16, 16, 20);
+        
+        // Œil laser rouge
+        g.fillStyle(0xff0000, 1);
+        g.fillEllipse(16, 14, 10, 6);
+        g.fillStyle(0xff6666, 0.8);
+        g.fillEllipse(16, 13, 6, 3);
+        
+        // Lueur œil
+        g.fillStyle(0xffaaaa, 1);
+        g.fillCircle(16, 13, 2);
+        
+        // Pattes mécaniques
+        g.fillStyle(0x6b3508, 1);
+        g.fillRect(2, 10, 4, 12);
+        g.fillRect(26, 10, 4, 12);
+        g.fillRect(6, 26, 6, 4);
+        g.fillRect(20, 26, 6, 4);
+        
+        // Rivets
+        g.fillStyle(0x444444, 1);
+        g.fillCircle(8, 8, 2);
+        g.fillCircle(24, 8, 2);
+        g.fillCircle(8, 24, 2);
+        g.fillCircle(24, 24, 2);
+        
         g.generateTexture('enemy', 32, 32);
         g.clear();
         
-        // Key
-        g.fillStyle(0xffaa00);
-        g.fillCircle(16, 10, 6);
-        g.fillRect(14, 14, 4, 12);
+        // ========== KEY AVANCÉE (Clé Dorée Néon) ==========
+        // Tête de clé avec glow
+        const keyGlow = g.createRadialGradient(16, 10, 0, 16, 10, 12);
+        keyGlow.addColorStop(0, 0xffffaa);
+        keyGlow.addColorStop(0.5, 0xffcc00);
+        keyGlow.addColorStop(1, 0xffaa00);
+        g.fillStyle(keyGlow, 1);
+        g.fillCircle(16, 10, 7);
+        
+        // Centre trou
+        g.fillStyle(0x000000, 0.3);
+        g.fillCircle(16, 10, 3);
+        
+        // Tige
+        const keyShaftGrad = g.createLinearGradient(14, 14, 18, 30);
+        keyShaftGrad.addColorStop(0, 0xffee88);
+        keyShaftGrad.addColorStop(0.5, 0xffcc00);
+        keyShaftGrad.addColorStop(1, 0xffaa00);
+        g.fillStyle(keyShaftGrad, 1);
+        g.fillRect(14, 14, 4, 16);
+        
+        // Dents de la clé
+        g.fillStyle(0xffcc00, 1);
+        g.fillRect(18, 22, 4, 3);
+        g.fillRect(18, 26, 3, 3);
+        
+        // Éclat lumineux
+        g.fillStyle(0xffffff, 0.8);
+        g.fillCircle(16, 8, 2);
+        
         g.generateTexture('key', 32, 32);
         g.clear();
         
-        // Door
-        g.fillStyle(0x444444);
+        // ========== DOOR AVANCÉE (Porte Mécanique Massive) ==========
+        // Cadre métallique
+        const doorFrameGrad = g.createLinearGradient(0, 0, 64, 0);
+        doorFrameGrad.addColorStop(0, 0x333333);
+        doorFrameGrad.addColorStop(0.5, 0x444444);
+        doorFrameGrad.addColorStop(1, 0x333333);
+        g.fillStyle(doorFrameGrad, 1);
         g.fillRect(0, 0, 64, 64);
-        g.fillStyle(0xffaa00);
-        g.fillCircle(32, 32, 8);
+        
+        // Portes coulissantes
+        const doorPanelGrad = g.createLinearGradient(0, 0, 0, 64);
+        doorPanelGrad.addColorStop(0, 0x2a2a2a);
+        doorPanelGrad.addColorStop(0.5, 0x3a3a3a);
+        doorPanelGrad.addColorStop(1, 0x2a2a2a);
+        g.fillStyle(doorPanelGrad, 1);
+        g.fillRect(4, 4, 25, 56);
+        g.fillRect(35, 4, 25, 56);
+        
+        // Lignes de renforcement
+        g.lineStyle(2, 0x555555, 1);
+        g.moveTo(4, 20);
+        g.lineTo(29, 20);
+        g.moveTo(4, 44);
+        g.lineTo(29, 44);
+        g.moveTo(35, 20);
+        g.lineTo(60, 20);
+        g.moveTo(35, 44);
+        g.lineTo(60, 44);
+        g.strokePath();
+        
+        // Serrure centrale
+        g.fillStyle(0x222222, 1);
+        g.fillCircle(32, 32, 10);
+        
+        // Lumière serrure (rouge = fermée, s'allumera en vert)
+        g.fillStyle(0xff3300, 1);
+        g.fillCircle(32, 32, 6);
+        g.fillStyle(0xff6666, 0.8);
+        g.fillCircle(32, 30, 3);
+        
+        // Voyants latéraux
+        g.fillStyle(0xff0000, 0.8);
+        g.fillCircle(16, 32, 4);
+        g.fillCircle(48, 32, 4);
+        
         g.generateTexture('door', 64, 64);
         g.clear();
     }
@@ -455,6 +662,27 @@ class GameScene extends Phaser.Scene {
         this.player.setVelocity(Math.cos(angle) * 500, Math.sin(angle) * 500);
         this.player.setAlpha(0.5);
         
+        // Particules de dash (traînée néon)
+        for(let i = 0; i < 10; i++) {
+            const particle = this.add.circle(
+                this.player.x - Math.cos(angle) * i * 8,
+                this.player.y - Math.sin(angle) * i * 8,
+                4 - i * 0.3,
+                0x00ff88,
+                0.8 - i * 0.08
+            );
+            particle.setDepth(50);
+            
+            this.tweens.add({
+                targets: particle,
+                alpha: 0,
+                scale: 0,
+                duration: 300,
+                delay: i * 20,
+                onComplete: () => particle.destroy()
+            });
+        }
+        
         this.time.delayedCall(150, () => {
             this.player.setAlpha(1);
             this.player.canDash = true;
@@ -464,6 +692,39 @@ class GameScene extends Phaser.Scene {
     hitEnemy(player, enemy) {
         // If dashing, kill enemy
         if(!this.player.canDash) {
+            const enemyX = enemy.x;
+            const enemyY = enemy.y;
+            
+            // Particules d'explosion rouille
+            for(let i = 0; i < 15; i++) {
+                const angle = Math.random() * Math.PI * 2;
+                const dist = 20 + Math.random() * 30;
+                const particle = this.add.rectangle(enemyX, enemyY, 6, 6, 0x8b4513);
+                particle.setDepth(55);
+                
+                this.tweens.add({
+                    targets: particle,
+                    x: enemyX + Math.cos(angle) * dist,
+                    y: enemyY + Math.sin(angle) * dist,
+                    angle: Math.random() * 360,
+                    alpha: 0,
+                    duration: 400,
+                    ease: 'Power2',
+                    onComplete: () => particle.destroy()
+                });
+            }
+            
+            // Flash rouge
+            const flash = this.add.circle(enemyX, enemyY, 40, 0xff4400, 0.6);
+            flash.setDepth(54);
+            this.tweens.add({
+                targets: flash,
+                scale: 1.5,
+                alpha: 0,
+                duration: 200,
+                onComplete: () => flash.destroy()
+            });
+            
             enemy.destroy();
             return;
         }
@@ -482,6 +743,38 @@ class GameScene extends Phaser.Scene {
     }
     
     collectKey(player, key) {
+        const keyX = key.x;
+        const keyY = key.y;
+        
+        // Particules de collecte (étincelles dorées)
+        for(let i = 0; i < 12; i++) {
+            const angle = (Math.PI * 2 / 12) * i;
+            const particle = this.add.circle(keyX, keyY, 3, 0xffcc00, 1);
+            particle.setDepth(60);
+            
+            this.tweens.add({
+                targets: particle,
+                x: keyX + Math.cos(angle) * 40,
+                y: keyY + Math.sin(angle) * 40,
+                alpha: 0,
+                scale: 0,
+                duration: 500,
+                ease: 'Power2',
+                onComplete: () => particle.destroy()
+            });
+        }
+        
+        // Flash lumineux
+        const flash = this.add.circle(keyX, keyY, 30, 0xffffaa, 0.8);
+        flash.setDepth(59);
+        this.tweens.add({
+            targets: flash,
+            scale: 2,
+            alpha: 0,
+            duration: 300,
+            onComplete: () => flash.destroy()
+        });
+        
         key.destroy();
         this.player.keys++;
         this.keysText.setText(`Keys: ${this.player.keys}/3`);
@@ -490,6 +783,9 @@ class GameScene extends Phaser.Scene {
             this.doorLocked = false;
             this.missionText.setText('DOOR OPEN! Escape!');
             this.missionText.setBackgroundColor('#00aa00');
+            
+            // Effet porte qui s'ouvre (changement de couleur)
+            this.door.setTint(0x88ff88);
         }
     }
     
