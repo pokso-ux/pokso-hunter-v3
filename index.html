@@ -45,5 +45,14 @@
     </div>
     <script src="https://cdn.jsdelivr.net/npm/phaser@3.60.0/dist/phaser.min.js"></script>
     <script src="game.js"></script>
+    <script>
+        // Cacher le loading quand Phaser est prêt
+        window.addEventListener('load', function() {
+            setTimeout(function() {
+                var loading = document.getElementById('loading');
+                if(loading) loading.style.display = 'none';
+            }, 1000);
+        });
+    </script>
 </body>
 </html>
