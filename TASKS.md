@@ -10,7 +10,7 @@
 - [x] Player system (WASD/Arrows, dash)
 - [x] Camera follow smooth
 - [x] Physics & collisions
-- [x] Map generation (60x40 tiles, 2 zones)
+- [x] Map generation (Zelda style - 7 salles + couloirs)
 - [x] Single-file game.js
 
 ## Phase 3: Gameplay Content ✅
@@ -24,6 +24,7 @@
 - [x] HUD (health, keys)
 - [x] Mission text
 - [x] Controls display
+- [x] Minimap (Zelda style)
 
 ## Phase 5: GitHub Deployment ✅
 - [x] Créer repo GitHub

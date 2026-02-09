@@ -18,24 +18,25 @@
 - [x] Collisions physics + camera follow
 
 ### Phase 3: Gameplay Content ✅ (100%)
-- [x] Map 60x40 tiles (Forest + Rust zones)
+- [x] Map style Zelda - 7 salles + couloirs
 - [x] 5 Rust Walker enemies (spawn + AI)
 - [x] 3 Keys collection system
 - [x] Door escape mission
 - [x] Win condition (3 keys → door → escape)
 
-### Phase 4: UI/UX ✅ (90%)
+### Phase 4: UI/UX ✅ (100%)
 - [x] MainMenu animé (titre + bouton Play)
 - [x] HUD vie + clés (scrollFactor fixé)
 - [x] Mission text dynamique
 - [x] Controls display (WASD + SPACE)
 - [x] Screen shake on damage
+- [x] Minimap style Zelda (position, zones, clés, porte)
 - [ ] Inventory screen (I key) - optionnel
 
-### Phase 5: Polish 🔄 (30%)
-- [x] Procedural textures (pas d'assets externes)
+### Phase 5: Polish 🔄 (60%)
+- [x] Procedural textures avancées (gradients, glow)
+- [x] Particules dash, collecte, explosion ennemis
 - [ ] Audio (music, SFX)
-- [ ] Particle effects
 - [ ] Save system localStorage
 
 ### Phase 6: Test & Debug 🔄 (50%)
