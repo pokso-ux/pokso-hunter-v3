@@ -31,7 +31,23 @@ window.addEventListener('DOMContentLoaded', function() {
         
         // Glow layer pour effet néon
         const gl = new BABYLON.GlowLayer("glow", scene);
-        gl.intensity = 0.6;
+        gl.intensity = 0.8;
+        
+        // ShadowGenerator pour ombres réalistes
+        const shadowGenerator = new BABYLON.ShadowGenerator(2048, hemiLight);
+        shadowGenerator.useBlurExponentialShadowMap = true;
+        shadowGenerator.blurKernel = 32;
+        
+        // Lumières colorées par zone
+        const forestLight = new BABYLON.PointLight("forestLight", new BABYLON.Vector3(-15, 8, 0), scene);
+        forestLight.diffuse = new BABYLON.Color3(0.2, 0.8, 0.4);
+        forestLight.intensity = 0.6;
+        forestLight.range = 25;
+        
+        const rustLight = new BABYLON.PointLight("rustLight", new BABYLON.Vector3(15, 8, 0), scene);
+        rustLight.diffuse = new BABYLON.Color3(0.9, 0.3, 0.1);
+        rustLight.intensity = 0.6;
+        rustLight.range = 25;
         
         // ========== JOUEUR 3D (Robot Voxel) ==========
         const player = new BABYLON.TransformNode("player", scene);
