@@ -9,20 +9,16 @@ class BootScene extends Phaser.Scene {
     preload() {
         const g = this.make.graphics();
         
-        // ========== PLAYER AVANCÉ (Cyberpunk Ninja) ==========
-        // Corps avec dégradé néon
-        const playerGrad = g.createLinearGradient(0, 0, 32, 32);
-        playerGrad.addColorStop(0, 0x00ff88);
-        playerGrad.addColorStop(0.5, 0x00aa44);
-        playerGrad.addColorStop(1, 0x006622);
-        g.fillStyle(playerGrad, 1);
+        // ========== PLAYER (Cyberpunk Style) ==========
+        // Corps néon vert
+        g.fillStyle(0x00ff88, 1);
         g.fillCircle(16, 16, 14);
         
         // Armure/casque
         g.fillStyle(0x00ffcc, 0.8);
         g.fillCircle(16, 14, 10);
         
-        // Visor néon
+        // Visor néon cyan
         g.fillStyle(0x00ffff, 1);
         g.fillEllipse(16, 13, 14, 6);
         
@@ -38,46 +34,51 @@ class BootScene extends Phaser.Scene {
         g.generateTexture('player', 32, 32);
         g.clear();
         
-        // ========== TILE FOREST AVANCÉ ==========
-        // Base herbe avec dégradé
-        const forestGrad = g.createRadialGradient(32, 32, 0, 32, 32, 45);
-        forestGrad.addColorStop(0, 0x3d8a3d);
-        forestGrad.addColorStop(0.7, 0x2d6a2d);
-        forestGrad.addColorStop(1, 0x1d4a1d);
-        g.fillStyle(forestGrad, 1);
+        // ========== TILE FOREST ==========
+        // Base herbe
+        g.fillStyle(0x2d6a2d, 1);
         g.fillRect(0, 0, 64, 64);
         
+        // Variations de tons
+        g.fillStyle(0x3d8a3d, 0.5);
+        g.fillCircle(16, 16, 20);
+        g.fillStyle(0x1d4a1d, 0.5);
+        g.fillCircle(48, 48, 20);
+        
         // Herbe détaillée
-        for(let i = 0; i < 15; i++) {
-            const x = Math.random() * 64;
-            const y = Math.random() * 64;
-            const h = 8 + Math.random() * 12;
+        for(let i = 0; i < 12; i++) {
+            const x = 8 + (i % 4) * 16;
+            const y = 8 + Math.floor(i / 4) * 20;
             g.fillStyle(0x4dca4d, 0.8);
-            g.fillTriangle(x, y + h, x - 2, y, x + 2, y);
+            g.fillTriangle(x, y + 10, x - 2, y, x + 2, y);
+            g.fillTriangle(x + 4, y + 8, x + 2, y - 2, x + 6, y - 2);
         }
         
-        // Fleurs néon rares
-        for(let i = 0; i < 3; i++) {
-            const x = 10 + Math.random() * 44;
-            const y = 10 + Math.random() * 44;
-            g.fillStyle(0x00ff88, 0.9);
-            g.fillCircle(x, y, 3);
-            g.fillStyle(0x88ffcc, 0.6);
-            g.fillCircle(x, y, 1);
-        }
+        // Fleurs néon
+        g.fillStyle(0x00ff88, 0.9);
+        g.fillCircle(16, 16, 3);
+        g.fillCircle(48, 32, 3);
+        g.fillCircle(32, 48, 3);
         
         g.generateTexture('tile_forest', 64, 64);
         g.clear();
         
-        // ========== TILE RUST AVANCÉ ==========
+        // ========== TILE RUST ==========
         // Base métal rouillé
-        const rustGrad = g.createLinearGradient(0, 0, 64, 64);
-        rustGrad.addColorStop(0, 0xa06030);
-        rustGrad.addColorStop(0.3, 0x8b4513);
-        rustGrad.addColorStop(0.6, 0x6b3508);
-        rustGrad.addColorStop(1, 0x5a3010);
-        g.fillStyle(rustGrad, 1);
+        g.fillStyle(0x8b4513, 1);
         g.fillRect(0, 0, 64, 64);
+        
+        // Variations
+        g.fillStyle(0xa06030, 0.5);
+        g.fillCircle(20, 20, 25);
+        g.fillStyle(0x6b3508, 0.5);
+        g.fillCircle(50, 45, 20);
+        
+        // Taches de rouille
+        g.fillStyle(0x5a3010, 0.7);
+        g.fillCircle(15, 15, 8);
+        g.fillCircle(45, 25, 10);
+        g.fillCircle(30, 50, 6);
         
         // Taches de rouille
         for(let i = 0; i < 8; i++) {
@@ -107,13 +108,9 @@ class BootScene extends Phaser.Scene {
         g.generateTexture('tile_rust', 64, 64);
         g.clear();
         
-        // ========== MUR AVANCÉ ==========
+        // ========== MUR ==========
         // Base mur sombre
-        const wallGrad = g.createLinearGradient(0, 0, 0, 64);
-        wallGrad.addColorStop(0, 0x444444);
-        wallGrad.addColorStop(0.5, 0x333333);
-        wallGrad.addColorStop(1, 0x222222);
-        g.fillStyle(wallGrad, 1);
+        g.fillStyle(0x333333, 1);
         g.fillRect(0, 0, 64, 64);
         
         // Brique pattern
@@ -144,14 +141,16 @@ class BootScene extends Phaser.Scene {
         g.generateTexture('tile_wall', 64, 64);
         g.clear();
         
-        // ========== ENEMY AVANCÉ (Rust Walker Mécanique) ==========
+        // ========== ENEMY (Rust Walker) ==========
         // Corps principal mécanique
-        const enemyBodyGrad = g.createRadialGradient(16, 16, 0, 16, 16, 16);
-        enemyBodyGrad.addColorStop(0, 0xaa5533);
-        enemyBodyGrad.addColorStop(0.6, 0x8b4513);
-        enemyBodyGrad.addColorStop(1, 0x5a3010);
-        g.fillStyle(enemyBodyGrad, 1);
+        g.fillStyle(0x8b4513, 1);
         g.fillCircle(16, 16, 14);
+        
+        // Détail rouille
+        g.fillStyle(0xaa5533, 0.6);
+        g.fillCircle(12, 12, 8);
+        g.fillStyle(0x5a3010, 0.6);
+        g.fillCircle(20, 20, 6);
         
         // Plaque métallique centrale
         g.fillStyle(0x663311, 1);
@@ -184,25 +183,21 @@ class BootScene extends Phaser.Scene {
         g.generateTexture('enemy', 32, 32);
         g.clear();
         
-        // ========== KEY AVANCÉE (Clé Dorée Néon) ==========
-        // Tête de clé avec glow
-        const keyGlow = g.createRadialGradient(16, 10, 0, 16, 10, 12);
-        keyGlow.addColorStop(0, 0xffffaa);
-        keyGlow.addColorStop(0.5, 0xffcc00);
-        keyGlow.addColorStop(1, 0xffaa00);
-        g.fillStyle(keyGlow, 1);
+        // ========== KEY (Clé Dorée) ==========
+        // Tête de clé
+        g.fillStyle(0xffcc00, 1);
         g.fillCircle(16, 10, 7);
+        
+        // Halo doré
+        g.fillStyle(0xffffaa, 0.5);
+        g.fillCircle(16, 10, 5);
         
         // Centre trou
         g.fillStyle(0x000000, 0.3);
         g.fillCircle(16, 10, 3);
         
         // Tige
-        const keyShaftGrad = g.createLinearGradient(14, 14, 18, 30);
-        keyShaftGrad.addColorStop(0, 0xffee88);
-        keyShaftGrad.addColorStop(0.5, 0xffcc00);
-        keyShaftGrad.addColorStop(1, 0xffaa00);
-        g.fillStyle(keyShaftGrad, 1);
+        g.fillStyle(0xffaa00, 1);
         g.fillRect(14, 14, 4, 16);
         
         // Dents de la clé
@@ -217,23 +212,24 @@ class BootScene extends Phaser.Scene {
         g.generateTexture('key', 32, 32);
         g.clear();
         
-        // ========== DOOR AVANCÉE (Porte Mécanique Massive) ==========
+        // ========== DOOR (Porte Mécanique) ==========
         // Cadre métallique
-        const doorFrameGrad = g.createLinearGradient(0, 0, 64, 0);
-        doorFrameGrad.addColorStop(0, 0x333333);
-        doorFrameGrad.addColorStop(0.5, 0x444444);
-        doorFrameGrad.addColorStop(1, 0x333333);
-        g.fillStyle(doorFrameGrad, 1);
+        g.fillStyle(0x333333, 1);
         g.fillRect(0, 0, 64, 64);
         
+        // Détail métal
+        g.fillStyle(0x444444, 0.5);
+        g.fillRect(0, 20, 64, 24);
+        
         // Portes coulissantes
-        const doorPanelGrad = g.createLinearGradient(0, 0, 0, 64);
-        doorPanelGrad.addColorStop(0, 0x2a2a2a);
-        doorPanelGrad.addColorStop(0.5, 0x3a3a3a);
-        doorPanelGrad.addColorStop(1, 0x2a2a2a);
-        g.fillStyle(doorPanelGrad, 1);
+        g.fillStyle(0x3a3a3a, 1);
         g.fillRect(4, 4, 25, 56);
         g.fillRect(35, 4, 25, 56);
+        
+        // Ombre portes
+        g.fillStyle(0x2a2a2a, 0.7);
+        g.fillRect(4, 4, 25, 10);
+        g.fillRect(35, 4, 25, 10);
         
         // Lignes de renforcement
         g.lineStyle(2, 0x555555, 1);
