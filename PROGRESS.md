@@ -8,14 +8,17 @@
 - [x] PROGRESS.md and TASKS.md created
 - [x] Cron heartbeat configured (hourly reports)
 
-### Phase 2: Core Engine ✅ (100%)
-- [x] BootScene.js - Asset generation procedural
-- [x] MenuScene.js - Main menu avec animations
-- [x] Player.js - WASD/Arrows + Dash + Health
-- [x] Enemy.js - AI patrol/chase/attack
-- [x] GameScene.js - World 60x40 tiles, 2 zones
-- [x] Single-file version (game.js 354 lignes)
-- [x] Collisions physics + camera follow
+### Phase 2: Core Engine ✅ (100%) - VERSION 3D Babylon.js
+- [x] Scène 3D complète avec Babylon.js
+- [x] Caméra isométrique ArcRotateCamera
+- [x] Joueur 3D (robot voxel cyan/violet avec yeux roses)
+- [x] Ennemis 3D (robots rouille avec yeux laser)
+- [x] Environnement 3D (sol texturé + murs voxel)
+- [x] Glow layer pour effet néon
+- [x] Fog atmosphérique
+- [x] Mouvement WASD + Dash 3D
+- [x] Collisions 3D
+- [x] Single-file version (game.js 13KB)
 
 ### Phase 3: Gameplay Content ✅ (100%)
 - [x] Map style Zelda - 7 salles + couloirs
@@ -31,6 +34,7 @@
 - [x] Controls display (WASD + SPACE)
 - [x] Screen shake on damage
 - [x] Minimap style Zelda (position, zones, clés, porte)
+- [x] Graphismes Voxel style (robot, coffres, tiles cyberpunk)
 - [ ] Inventory screen (I key) - optionnel
 
 ### Phase 5: Polish 🔄 (60%)
