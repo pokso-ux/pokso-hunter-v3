@@ -114,8 +114,11 @@ class GameScene extends Phaser.Scene {
         // Create world
         this.createWorld();
         
-        // Player
-        this.player = this.physics.add.sprite(400, 300, 'player');
+        // Player - Spawn dans la salle de départ
+        const spawnRoom = this.rooms.find(r => r.name === 'spawn');
+        const spawnX = (spawnRoom.x + spawnRoom.w / 2) * this.tileSize;
+        const spawnY = (spawnRoom.y + spawnRoom.h / 2) * this.tileSize;
+        this.player = this.physics.add.sprite(spawnX, spawnY, 'player');
         this.player.setCollideWorldBounds(true);
         this.player.speed = 200;
         this.player.canDash = true;
@@ -140,8 +143,11 @@ class GameScene extends Phaser.Scene {
         this.spawnKeys(3);
         this.physics.add.overlap(this.player, this.keysGroup, this.collectKey, null, this);
         
-        // Door
-        this.door = this.physics.add.staticSprite(3776, 1280, 'door');
+        // Door - Dans la salle boss
+        const bossRoom = this.rooms.find(r => r.name === 'boss');
+        const doorX = (bossRoom.x + bossRoom.w / 2) * this.tileSize;
+        const doorY = (bossRoom.y + bossRoom.h / 2) * this.tileSize;
+        this.door = this.physics.add.staticSprite(doorX, doorY, 'door');
         this.doorLocked = true;
         this.physics.add.overlap(this.player, this.door, this.checkDoor, null, this);
         
@@ -176,10 +182,10 @@ class GameScene extends Phaser.Scene {
     }
     
     createMinimap() {
-        const mapX = 880;
-        const mapY = 100;
-        const mapW = 120;
-        const mapH = 80;
+        const mapX = 900;
+        const mapY = 120;
+        const mapW = 100;
+        const mapH = 70;
         
         // Fond de la minimap
         this.minimapBg = this.add.rectangle(mapX, mapY, mapW, mapH, 0x000000, 0.7)
@@ -188,64 +194,166 @@ class GameScene extends Phaser.Scene {
             .setDepth(100);
         
         // Titre minimap
-        this.add.text(mapX, mapY - 50, 'MAP', {
-            fontSize: '14px',
+        this.add.text(mapX, mapY - 45, 'MAP', {
+            fontSize: '12px',
             color: '#00ff41'
         }).setOrigin(0.5).setScrollFactor(0).setDepth(100);
         
-        // Zone Forest (gauche)
-        this.minimapForest = this.add.rectangle(mapX - 30, mapY, 50, 70, 0x2d5a2d, 0.8)
-            .setScrollFactor(0).setDepth(100);
-        
-        // Zone Rust (droite)
-        this.minimapRust = this.add.rectangle(mapX + 25, mapY, 50, 70, 0x8b4513, 0.8)
-            .setScrollFactor(0).setDepth(100);
-        
-        // Passage entre zones
-        this.minimapPass = this.add.rectangle(mapX - 2, mapY, 10, 25, 0x444444, 0.9)
-            .setScrollFactor(0).setDepth(100);
-        
         // Position joueur sur minimap
-        this.minimapPlayer = this.add.circle(mapX, mapY, 4, 0x00ff41)
+        this.minimapPlayer = this.add.circle(mapX, mapY, 3, 0x00ff41)
             .setScrollFactor(0)
             .setDepth(101);
-        
-        // Marqueur porte
-        this.minimapDoor = this.add.triangle(mapX + 45, mapY, 0, -5, -4, 3, 4, 3, 0xffaa00)
-            .setScrollFactor(0)
-            .setDepth(101);
-        
-        // Marqueurs clés
-        this.minimapKeys = [];
     }
     
     createWorld() {
         this.walls = this.physics.add.staticGroup();
+        this.floorTiles = [];
         
-        for(let y = 0; y < 40; y++) {
-            for(let x = 0; x < 60; x++) {
-                const px = x * 64;
-                const py = y * 64;
-                const tile = x < 30 ? 'tile_forest' : 'tile_rust';
-                
-                this.add.image(px + 32, py + 32, tile);
-                
-                // Walls at borders and transition
-                if(x === 0 || x === 59 || y === 0 || y === 39 || 
-                   (x === 30 && (y < 15 || y > 24))) {
-                    this.walls.create(px + 32, py + 32, 'tile_wall');
-                }
+        // Carte 80x50 tiles (Zelda style avec salles et couloirs)
+        this.mapWidth = 80;
+        this.mapHeight = 50;
+        this.tileSize = 64;
+        
+        // Générer le monde vide d'abord
+        for(let y = 0; y < this.mapHeight; y++) {
+            this.floorTiles[y] = [];
+            for(let x = 0; x < this.mapWidth; x++) {
+                this.floorTiles[y][x] = 'wall';
             }
         }
         
-        this.physics.world.setBounds(0, 0, 3840, 2560);
-        this.cameras.main.setBounds(0, 0, 3840, 2560);
+        // Définir les salles (x, y, width, height, biome)
+        const rooms = [
+            {x: 5, y: 5, w: 12, h: 10, biome: 'forest', name: 'spawn'},      // Salle de départ
+            {x: 20, y: 3, w: 10, h: 8, biome: 'forest', name: 'room1'},      // Salle nord
+            {x: 18, y: 16, w: 14, h: 10, biome: 'forest', name: 'room2'},    // Salle sud
+            {x: 35, y: 8, w: 12, h: 12, biome: 'rust', name: 'hub'},         // Hub central
+            {x: 50, y: 5, w: 10, h: 10, biome: 'rust', name: 'room3'},       // Salle est haut
+            {x: 52, y: 20, w: 12, h: 10, biome: 'rust', name: 'room4'},      // Salle est bas
+            {x: 65, y: 12, w: 10, h: 12, biome: 'rust', name: 'boss'}        // Salle finale (porte)
+        ];
+        
+        // Créer les salles
+        rooms.forEach(room => {
+            this.createRoom(room.x, room.y, room.w, room.h, room.biome);
+        });
+        
+        // Connecter les salles avec des couloirs
+        this.createCorridor(rooms[0], rooms[1]); // spawn -> room1
+        this.createCorridor(rooms[0], rooms[2]); // spawn -> room2
+        this.createCorridor(rooms[1], rooms[3]); // room1 -> hub
+        this.createCorridor(rooms[2], rooms[3]); // room2 -> hub
+        this.createCorridor(rooms[3], rooms[4]); // hub -> room3
+        this.createCorridor(rooms[3], rooms[5]); // hub -> room4
+        this.createCorridor(rooms[4], rooms[6]); // room3 -> boss
+        this.createCorridor(rooms[5], rooms[6]); // room4 -> boss
+        
+        // Ajouter des détails dans les salles (piliers, obstacles)
+        this.addRoomDetails(rooms);
+        
+        // Rendre la carte
+        this.renderMap();
+        
+        // Mettre à jour les limites du monde
+        this.physics.world.setBounds(0, 0, this.mapWidth * this.tileSize, this.mapHeight * this.tileSize);
+        this.cameras.main.setBounds(0, 0, this.mapWidth * this.tileSize, this.mapHeight * this.tileSize);
+        
+        // Stocker les rooms pour le spawn
+        this.rooms = rooms;
+    }
+    
+    createRoom(x, y, w, h, biome) {
+        for(let ry = y; ry < y + h; ry++) {
+            for(let rx = x; rx < x + w; rx++) {
+                if(ry >= 0 && ry < this.mapHeight && rx >= 0 && rx < this.mapWidth) {
+                    this.floorTiles[ry][rx] = biome;
+                }
+            }
+        }
+    }
+    
+    createCorridor(roomA, roomB) {
+        // Centre de chaque salle
+        const x1 = Math.floor(roomA.x + roomA.w / 2);
+        const y1 = Math.floor(roomA.y + roomA.h / 2);
+        const x2 = Math.floor(roomB.x + roomB.w / 2);
+        const y2 = Math.floor(roomB.y + roomB.h / 2);
+        
+        // Couloir en L (horizontal puis vertical ou inverse)
+        const biome = roomA.biome === 'forest' || roomB.biome === 'forest' ? 'forest' : 'rust';
+        
+        if(Math.random() > 0.5) {
+            // Horizontal puis vertical
+            for(let x = Math.min(x1, x2); x <= Math.max(x1, x2); x++) {
+                this.floorTiles[y1][x] = biome;
+                // Couloir plus large
+                if(y1 + 1 < this.mapHeight) this.floorTiles[y1 + 1][x] = biome;
+            }
+            for(let y = Math.min(y1, y2); y <= Math.max(y1, y2); y++) {
+                this.floorTiles[y][x2] = biome;
+                if(x2 + 1 < this.mapWidth) this.floorTiles[y][x2 + 1] = biome;
+            }
+        } else {
+            // Vertical puis horizontal
+            for(let y = Math.min(y1, y2); y <= Math.max(y1, y2); y++) {
+                this.floorTiles[y][x1] = biome;
+                if(x1 + 1 < this.mapWidth) this.floorTiles[y][x1 + 1] = biome;
+            }
+            for(let x = Math.min(x1, x2); x <= Math.max(x1, x2); x++) {
+                this.floorTiles[y2][x] = biome;
+                if(y2 + 1 < this.mapHeight) this.floorTiles[y2 + 1][x] = biome;
+            }
+        }
+    }
+    
+    addRoomDetails(rooms) {
+        rooms.forEach(room => {
+            if(room.name === 'spawn') return; // Pas d'obstacles dans la salle de départ
+            
+            // Ajouter des piliers dans les coins
+            this.floorTiles[room.y + 1][room.x + 1] = 'wall';
+            this.floorTiles[room.y + 1][room.x + room.w - 2] = 'wall';
+            this.floorTiles[room.y + room.h - 2][room.x + 1] = 'wall';
+            this.floorTiles[room.y + room.h - 2][room.x + room.w - 2] = 'wall';
+            
+            // Ajouter des obstacles aléatoires
+            const numObstacles = Math.floor(Math.random() * 3);
+            for(let i = 0; i < numObstacles; i++) {
+                const ox = room.x + 2 + Math.floor(Math.random() * (room.w - 4));
+                const oy = room.y + 2 + Math.floor(Math.random() * (room.h - 4));
+                this.floorTiles[oy][ox] = 'wall';
+            }
+        });
+    }
+    
+    renderMap() {
+        for(let y = 0; y < this.mapHeight; y++) {
+            for(let x = 0; x < this.mapWidth; x++) {
+                const px = x * this.tileSize + this.tileSize / 2;
+                const py = y * this.tileSize + this.tileSize / 2;
+                const tile = this.floorTiles[y][x];
+                
+                if(tile === 'forest') {
+                    this.add.image(px, py, 'tile_forest');
+                } else if(tile === 'rust') {
+                    this.add.image(px, py, 'tile_rust');
+                } else {
+                    // Wall
+                    this.add.image(px, py, 'tile_wall');
+                    this.walls.create(px, py, 'tile_wall');
+                }
+            }
+        }
     }
     
     spawnEnemies(count) {
+        // Spawn ennemis dans les salles (sauf spawn et boss)
+        const enemyRooms = this.rooms.filter(r => r.name !== 'spawn' && r.name !== 'boss');
+        
         for(let i = 0; i < count; i++) {
-            const x = Phaser.Math.Between(200, 3600);
-            const y = Phaser.Math.Between(200, 2300);
+            const room = enemyRooms[Math.floor(Math.random() * enemyRooms.length)];
+            const x = (room.x + 2 + Math.random() * (room.w - 4)) * this.tileSize;
+            const y = (room.y + 2 + Math.random() * (room.h - 4)) * this.tileSize;
             const enemy = this.enemies.create(x, y, 'enemy');
             enemy.setData('patrolX', x);
             enemy.setData('patrolY', y);
@@ -254,14 +362,12 @@ class GameScene extends Phaser.Scene {
     }
     
     spawnKeys(count) {
-        const mapX = 880;
-        const mapY = 100;
-        const worldW = 3840;
-        const worldH = 2560;
+        // Placer les clés dans 3 salles différentes (sauf spawn et boss)
+        const keyRooms = this.rooms.filter(r => r.name !== 'spawn' && r.name !== 'boss').slice(0, count);
         
-        for(let i = 0; i < count; i++) {
-            const x = Phaser.Math.Between(200, 3600);
-            const y = Phaser.Math.Between(200, 2300);
+        keyRooms.forEach(room => {
+            const x = (room.x + room.w / 2) * this.tileSize;
+            const y = (room.y + room.h / 2) * this.tileSize;
             const key = this.keysGroup.create(x, y, 'key');
             
             this.tweens.add({
@@ -271,18 +377,7 @@ class GameScene extends Phaser.Scene {
                 yoyo: true,
                 repeat: -1
             });
-            
-            // Ajouter marqueur sur minimap
-            const keyMapX = mapX - 30 + ((x / (worldW / 2)) * 50) - 25;
-            const keyMapY = mapY + ((y / worldH) * 70) - 35;
-            const keyMarker = this.add.circle(
-                Phaser.Math.Clamp(keyMapX, mapX - 55, mapX + 50),
-                Phaser.Math.Clamp(keyMapY, mapY - 35, mapY + 35),
-                2, 0xffaa00
-            ).setScrollFactor(0).setDepth(101);
-            
-            key.setData('minimapMarker', keyMarker);
-        }
+        });
     }
     
     update() {
@@ -320,14 +415,14 @@ class GameScene extends Phaser.Scene {
     updateMinimap() {
         const mapX = 880;
         const mapY = 100;
-        const worldW = 3840;
-        const worldH = 2560;
+        const worldW = this.mapWidth * this.tileSize;
+        const worldH = this.mapHeight * this.tileSize;
         
         // Convertir position joueur monde → minimap
-        const playerMapX = mapX - 30 + ((this.player.x / (worldW / 2)) * 50) - 25;
-        const playerMapY = mapY + ((this.player.y / worldH) * 70) - 35;
+        const playerMapX = mapX - 55 + (this.player.x / worldW) * 110;
+        const playerMapY = mapY - 35 + (this.player.y / worldH) * 70;
         
-        this.minimapPlayer.x = Phaser.Math.Clamp(playerMapX, mapX - 55, mapX + 50);
+        this.minimapPlayer.x = Phaser.Math.Clamp(playerMapX, mapX - 55, mapX + 55);
         this.minimapPlayer.y = Phaser.Math.Clamp(playerMapY, mapY - 35, mapY + 35);
     }
     
@@ -387,10 +482,6 @@ class GameScene extends Phaser.Scene {
     }
     
     collectKey(player, key) {
-        // Supprimer marqueur minimap
-        const marker = key.getData('minimapMarker');
-        if(marker) marker.destroy();
-        
         key.destroy();
         this.player.keys++;
         this.keysText.setText(`Keys: ${this.player.keys}/3`);
