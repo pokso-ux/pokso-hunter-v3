@@ -9,76 +9,152 @@ class BootScene extends Phaser.Scene {
     preload() {
         const g = this.make.graphics();
         
-        // ========== PLAYER (Cyberpunk Style) ==========
-        // Corps néon vert
-        g.fillStyle(0x00ff88, 1);
-        g.fillCircle(16, 16, 14);
+        // ========== PLAYER VOXEL STYLE (Robot Blocky) ==========
+        // Corps principal - bloc cyan
+        g.fillStyle(0x00d4ff, 1);
+        g.fillRect(4, 6, 24, 20);
         
-        // Armure/casque
-        g.fillStyle(0x00ffcc, 0.8);
-        g.fillCircle(16, 14, 10);
+        // Contours corps
+        g.lineStyle(2, 0x0099cc, 1);
+        g.strokeRect(4, 6, 24, 20);
         
-        // Visor néon cyan
-        g.fillStyle(0x00ffff, 1);
-        g.fillEllipse(16, 13, 14, 6);
+        // Tête - bloc violet
+        g.fillStyle(0x9933ff, 1);
+        g.fillRect(6, 2, 20, 14);
         
-        // Lueur visor
-        g.fillStyle(0xffffff, 0.6);
-        g.fillEllipse(16, 12, 8, 3);
+        // Contours tête
+        g.lineStyle(2, 0x7711dd, 1);
+        g.strokeRect(6, 2, 20, 14);
         
-        // Épaulettes
-        g.fillStyle(0x0088aa, 1);
-        g.fillCircle(6, 22, 4);
-        g.fillCircle(26, 22, 4);
+        // Yeux Voxel (style image - carrés roses)
+        g.fillStyle(0xff66cc, 1);
+        g.fillRect(9, 7, 6, 5);
+        g.fillRect(17, 7, 6, 5);
+        
+        // Glow yeux
+        g.fillStyle(0xff99dd, 0.6);
+        g.fillRect(10, 8, 4, 3);
+        g.fillRect(18, 8, 4, 3);
+        
+        // Mains jaunes (comme sur l'image)
+        g.fillStyle(0xffcc00, 1);
+        g.fillRect(0, 14, 6, 10);
+        g.fillRect(26, 14, 6, 10);
+        
+        // Contours mains
+        g.lineStyle(1, 0xcc9900, 1);
+        g.strokeRect(0, 14, 6, 10);
+        g.strokeRect(26, 14, 6, 10);
+        
+        // Antenne/oreilles
+        g.fillStyle(0x00d4ff, 1);
+        g.fillRect(2, 6, 4, 8);
+        g.fillRect(26, 6, 4, 8);
         
         g.generateTexture('player', 32, 32);
         g.clear();
         
-        // ========== TILE FOREST ==========
-        // Base herbe
-        g.fillStyle(0x2d6a2d, 1);
+        // ========== TILE FOREST VOXEL STYLE ==========
+        // Base herbe foncée
+        g.fillStyle(0x1a4a1a, 1);
         g.fillRect(0, 0, 64, 64);
         
-        // Variations de tons
-        g.fillStyle(0x3d8a3d, 0.5);
-        g.fillCircle(16, 16, 20);
-        g.fillStyle(0x1d4a1d, 0.5);
-        g.fillCircle(48, 48, 20);
+        // Herbe claire par-dessus (effet voxel)
+        g.fillStyle(0x2d8a2d, 1);
+        g.fillRect(4, 4, 56, 56);
         
-        // Herbe détaillée
-        for(let i = 0; i < 12; i++) {
-            const x = 8 + (i % 4) * 16;
-            const y = 8 + Math.floor(i / 4) * 20;
-            g.fillStyle(0x4dca4d, 0.8);
-            g.fillTriangle(x, y + 10, x - 2, y, x + 2, y);
-            g.fillTriangle(x + 4, y + 8, x + 2, y - 2, x + 6, y - 2);
+        // Contours voxel
+        g.lineStyle(2, 0x1a5a1a, 1);
+        for(let y = 0; y < 64; y += 8) {
+            g.moveTo(0, y);
+            g.lineTo(64, y);
         }
+        for(let x = 0; x < 64; x += 8) {
+            g.moveTo(x, 0);
+            g.lineTo(x, 64);
+        }
+        g.strokePath();
         
-        // Fleurs néon
-        g.fillStyle(0x00ff88, 0.9);
-        g.fillCircle(16, 16, 3);
-        g.fillCircle(48, 32, 3);
-        g.fillCircle(32, 48, 3);
+        // Arbres voxel (style image - blocs empilés)
+        // Tronc
+        g.fillStyle(0x5a3a1a, 1);
+        g.fillRect(44, 36, 8, 20);
+        // Feuillage - couches
+        g.fillStyle(0x2d8a2d, 1);
+        g.fillRect(36, 28, 24, 12);
+        g.fillStyle(0x3daa3d, 1);
+        g.fillRect(40, 20, 16, 12);
+        g.fillStyle(0x4dca4d, 1);
+        g.fillRect(44, 12, 8, 12);
+        
+        // Petits buissons
+        g.fillStyle(0x3daa3d, 1);
+        g.fillRect(8, 44, 12, 8);
+        g.fillRect(20, 48, 8, 6);
+        
+        // Fleurs néon (style image)
+        g.fillStyle(0xff00ff, 0.9);
+        g.fillRect(14, 38, 4, 4);
+        g.fillStyle(0x00ffff, 0.9);
+        g.fillRect(28, 24, 4, 4);
+        
+        // Pierres
+        g.fillStyle(0x666666, 1);
+        g.fillRect(8, 16, 6, 5);
+        g.fillRect(14, 18, 4, 3);
         
         g.generateTexture('tile_forest', 64, 64);
         g.clear();
         
-        // ========== TILE RUST ==========
-        // Base métal rouillé
-        g.fillStyle(0x8b4513, 1);
+        // ========== TILE RUST CYBERPUNK STYLE ==========
+        // Base métal sombre
+        g.fillStyle(0x2a2a3a, 1);
         g.fillRect(0, 0, 64, 64);
         
-        // Variations
-        g.fillStyle(0xa06030, 0.5);
-        g.fillCircle(20, 20, 25);
-        g.fillStyle(0x6b3508, 0.5);
-        g.fillCircle(50, 45, 20);
+        // Grille métallique
+        g.lineStyle(2, 0x3a3a4a, 1);
+        for(let y = 0; y < 64; y += 16) {
+            g.moveTo(0, y);
+            g.lineTo(64, y);
+        }
+        for(let x = 0; x < 64; x += 16) {
+            g.moveTo(x, 0);
+            g.lineTo(x, 64);
+        }
+        g.strokePath();
         
-        // Taches de rouille
-        g.fillStyle(0x5a3010, 0.7);
-        g.fillCircle(15, 15, 8);
-        g.fillCircle(45, 25, 10);
-        g.fillCircle(30, 50, 6);
+        // Bâtiments/panneaux voxel style cyberpunk
+        // Structure 1
+        g.fillStyle(0x4a4a5a, 1);
+        g.fillRect(8, 16, 20, 40);
+        g.fillStyle(0x5a5a6a, 1);
+        g.fillRect(10, 18, 16, 10);
+        g.fillRect(10, 30, 16, 10);
+        g.fillRect(10, 42, 16, 10);
+        
+        // Fenêtres néon
+        g.fillStyle(0x00ffff, 0.8);
+        g.fillRect(12, 20, 4, 6);
+        g.fillRect(20, 32, 4, 6);
+        g.fillRect(12, 44, 4, 6);
+        
+        // Structure 2
+        g.fillStyle(0x3a3a4a, 1);
+        g.fillRect(36, 28, 24, 32);
+        g.fillStyle(0xff00ff, 0.7);
+        g.fillRect(40, 32, 6, 4);
+        g.fillRect(50, 40, 6, 4);
+        g.fillRect(40, 48, 6, 4);
+        
+        // Tuyaux
+        g.fillStyle(0x6a6a7a, 1);
+        g.fillRect(4, 8, 56, 4);
+        g.fillRect(4, 8, 4, 20);
+        
+        // Rouille
+        g.fillStyle(0x8b4513, 0.5);
+        g.fillRect(28, 50, 8, 10);
+        g.fillRect(52, 12, 6, 8);
         
         // Taches de rouille
         for(let i = 0; i < 8; i++) {
@@ -141,94 +217,128 @@ class BootScene extends Phaser.Scene {
         g.generateTexture('tile_wall', 64, 64);
         g.clear();
         
-        // ========== ENEMY (Rust Walker) ==========
-        // Corps principal mécanique
+        // ========== ENEMY VOXEL (Robot Rust) ==========
+        // Corps bloc métal
         g.fillStyle(0x8b4513, 1);
-        g.fillCircle(16, 16, 14);
+        g.fillRect(6, 6, 20, 18);
+        
+        // Contours
+        g.lineStyle(2, 0x5a3010, 1);
+        g.strokeRect(6, 6, 20, 18);
         
         // Détail rouille
-        g.fillStyle(0xaa5533, 0.6);
-        g.fillCircle(12, 12, 8);
-        g.fillStyle(0x5a3010, 0.6);
-        g.fillCircle(20, 20, 6);
+        g.fillStyle(0xaa5533, 1);
+        g.fillRect(8, 8, 6, 6);
+        g.fillRect(18, 14, 6, 4);
         
-        // Plaque métallique centrale
-        g.fillStyle(0x663311, 1);
-        g.fillEllipse(16, 16, 16, 20);
-        
-        // Œil laser rouge
+        // Œil laser rouge (voxel)
         g.fillStyle(0xff0000, 1);
-        g.fillEllipse(16, 14, 10, 6);
+        g.fillRect(10, 10, 12, 6);
         g.fillStyle(0xff6666, 0.8);
-        g.fillEllipse(16, 13, 6, 3);
+        g.fillRect(12, 11, 8, 4);
         
         // Lueur œil
         g.fillStyle(0xffaaaa, 1);
-        g.fillCircle(16, 13, 2);
+        g.fillRect(14, 12, 4, 2);
         
-        // Pattes mécaniques
+        // Pattes mécaniques (blocs)
         g.fillStyle(0x6b3508, 1);
-        g.fillRect(2, 10, 4, 12);
-        g.fillRect(26, 10, 4, 12);
-        g.fillRect(6, 26, 6, 4);
-        g.fillRect(20, 26, 6, 4);
+        g.fillRect(0, 10, 6, 14);
+        g.fillRect(26, 10, 6, 14);
+        g.fillRect(4, 22, 6, 8);
+        g.fillRect(22, 22, 6, 8);
         
-        // Rivets
-        g.fillStyle(0x444444, 1);
-        g.fillCircle(8, 8, 2);
-        g.fillCircle(24, 8, 2);
-        g.fillCircle(8, 24, 2);
-        g.fillCircle(24, 24, 2);
+        // Contours pattes
+        g.lineStyle(1, 0x4a2000, 1);
+        g.strokeRect(0, 10, 6, 14);
+        g.strokeRect(26, 10, 6, 14);
+        
+        // Antennes
+        g.fillStyle(0x888888, 1);
+        g.fillRect(6, 0, 2, 6);
+        g.fillRect(24, 0, 2, 6);
+        g.fillStyle(0xff0000, 1);
+        g.fillRect(5, 0, 4, 2);
+        g.fillRect(23, 0, 4, 2);
         
         g.generateTexture('enemy', 32, 32);
         g.clear();
         
-        // ========== KEY (Clé Dorée) ==========
-        // Tête de clé
+        // ========== KEY VOXEL (Coffre mystère style image) ==========
+        // Coffre violet (comme sur l'image)
+        g.fillStyle(0x9933ff, 1);
+        g.fillRect(4, 8, 24, 16);
+        
+        // Couvercle
+        g.fillStyle(0xaa55ff, 1);
+        g.fillRect(4, 4, 24, 8);
+        
+        // Contours
+        g.lineStyle(2, 0x7711dd, 1);
+        g.strokeRect(4, 4, 24, 20);
+        
+        // Bande dorée
         g.fillStyle(0xffcc00, 1);
-        g.fillCircle(16, 10, 7);
+        g.fillRect(4, 12, 24, 4);
         
-        // Halo doré
-        g.fillStyle(0xffffaa, 0.5);
-        g.fillCircle(16, 10, 5);
+        // Serrure/question mark
+        g.fillStyle(0xff00ff, 1);
+        g.fillRect(14, 10, 4, 8);
+        g.fillRect(12, 8, 8, 4);
         
-        // Centre trou
-        g.fillStyle(0x000000, 0.3);
-        g.fillCircle(16, 10, 3);
+        // Glow
+        g.fillStyle(0xffffff, 0.6);
+        g.fillRect(14, 10, 2, 4);
         
-        // Tige
-        g.fillStyle(0xffaa00, 1);
-        g.fillRect(14, 14, 4, 16);
-        
-        // Dents de la clé
-        g.fillStyle(0xffcc00, 1);
-        g.fillRect(18, 22, 4, 3);
-        g.fillRect(18, 26, 3, 3);
-        
-        // Éclat lumineux
-        g.fillStyle(0xffffff, 0.8);
-        g.fillCircle(16, 8, 2);
+        // Halo doré autour
+        g.fillStyle(0xffff00, 0.3);
+        g.fillRect(0, 4, 4, 20);
+        g.fillRect(28, 4, 4, 20);
+        g.fillRect(4, 0, 24, 4);
+        g.fillRect(4, 24, 24, 4);
         
         g.generateTexture('key', 32, 32);
         g.clear();
         
-        // ========== DOOR (Porte Mécanique) ==========
-        // Cadre métallique
-        g.fillStyle(0x333333, 1);
+        // ========== DOOR VOXEL (Porte Futuriste) ==========
+        // Cadre métallique lourd
+        g.fillStyle(0x2a2a3a, 1);
         g.fillRect(0, 0, 64, 64);
         
-        // Détail métal
-        g.fillStyle(0x444444, 0.5);
-        g.fillRect(0, 20, 64, 24);
+        // Contours cadre
+        g.lineStyle(4, 0x1a1a2a, 1);
+        g.strokeRect(0, 0, 64, 64);
         
-        // Portes coulissantes
-        g.fillStyle(0x3a3a3a, 1);
+        // Portes coulissantes (voxel)
+        g.fillStyle(0x4a4a5a, 1);
         g.fillRect(4, 4, 25, 56);
         g.fillRect(35, 4, 25, 56);
         
-        // Ombre portes
-        g.fillStyle(0x2a2a2a, 0.7);
-        g.fillRect(4, 4, 25, 10);
+        // Détail portes - panneaux
+        g.fillStyle(0x5a5a6a, 1);
+        g.fillRect(6, 8, 21, 16);
+        g.fillRect(6, 28, 21, 12);
+        g.fillRect(6, 44, 21, 12);
+        g.fillRect(37, 8, 21, 16);
+        g.fillRect(37, 28, 21, 12);
+        g.fillRect(37, 44, 21, 12);
+        
+        // Lignes néon sur portes
+        g.fillStyle(0xff0000, 1);
+        g.fillRect(4, 4, 25, 3);
+        g.fillRect(35, 4, 25, 3);
+        
+        // Serrure centrale (voxel)
+        g.fillStyle(0x333333, 1);
+        g.fillRect(24, 24, 16, 16);
+        g.fillStyle(0x444444, 1);
+        g.fillRect(26, 26, 12, 12);
+        
+        // Voyant serrure (rouge = fermé)
+        g.fillStyle(0xff0000, 1);
+        g.fillRect(28, 28, 8, 8);
+        g.fillStyle(0xff6666, 0.8);
+        g.fillRect(30, 30, 4, 4);
         g.fillRect(35, 4, 25, 10);
         
         // Lignes de renforcement
