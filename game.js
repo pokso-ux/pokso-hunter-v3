@@ -13,31 +13,31 @@ window.addEventListener('DOMContentLoaded', function() {
         const scene = new BABYLON.Scene(engine);
         scene.clearColor = new BABYLON.Color3(0.15, 0.15, 0.25);
         
-        // Fog atmosphérique (allégé)
-        scene.fogMode = BABYLON.Scene.FOGMODE_EXP;
-        scene.fogDensity = 0.008;
-        scene.fogColor = new BABYLON.Color3(0.15, 0.15, 0.25);
+        // Pas de fog pour test
+        // scene.fogMode = BABYLON.Scene.FOGMODE_EXP;
+        // scene.fogDensity = 0.008;
+        // scene.fogColor = new BABYLON.Color3(0.15, 0.15, 0.25);
         
-        // Caméra isométrique
-        const camera = new BABYLON.ArcRotateCamera("camera", -Math.PI / 2, Math.PI / 3, 25, BABYLON.Vector3.Zero(), scene);
+        // Caméra isométrique - position de départ au centre
+        const camera = new BABYLON.ArcRotateCamera("camera", -Math.PI / 2, Math.PI / 2.5, 35, BABYLON.Vector3(0, 0, 0), scene);
         camera.attachControl(canvas, true);
-        camera.lowerRadiusLimit = 15;
-        camera.upperRadiusLimit = 50;
+        camera.lowerRadiusLimit = 10;
+        camera.upperRadiusLimit = 60;
         
-        // Lumières
+        // Lumière ambiante forte
         const hemiLight = new BABYLON.HemisphericLight("hemi", new BABYLON.Vector3(0, 1, 0), scene);
-        hemiLight.intensity = 0.8;
-        hemiLight.diffuse = new BABYLON.Color3(0.4, 0.5, 0.7);
-        hemiLight.groundColor = new BABYLON.Color3(0.2, 0.2, 0.3);
+        hemiLight.intensity = 1.2;
+        hemiLight.diffuse = new BABYLON.Color3(0.7, 0.7, 0.8);
+        hemiLight.groundColor = new BABYLON.Color3(0.4, 0.4, 0.5);
         
-        // Glow layer pour effet néon
+        // Glow layer
         const gl = new BABYLON.GlowLayer("glow", scene);
-        gl.intensity = 0.8;
+        gl.intensity = 0.5;
         
-        // Directional light pour ombres
-        const dirLight = new BABYLON.DirectionalLight("dir", new BABYLON.Vector3(-1, -2, -1), scene);
-        dirLight.position = new BABYLON.Vector3(20, 40, 20);
-        dirLight.intensity = 0.7;
+        // Directional light
+        const dirLight = new BABYLON.DirectionalLight("dir", new BABYLON.Vector3(-0.5, -1, -0.5), scene);
+        dirLight.position = new BABYLON.Vector3(10, 20, 10);
+        dirLight.intensity = 0.8;
         
         // ShadowGenerator pour ombres réalistes
         const shadowGenerator = new BABYLON.ShadowGenerator(2048, dirLight);
@@ -109,29 +109,7 @@ window.addEventListener('DOMContentLoaded', function() {
         // ========== SOL (Zones Forest + Rust) ==========
         const ground = BABYLON.MeshBuilder.CreateGround("ground", {width: 60, height: 40}, scene);
         const groundMat = new BABYLON.StandardMaterial("groundMat", scene);
-        
-        // Texture procédurale pour le sol
-        const groundTexture = new BABYLON.DynamicTexture("groundTex", {width: 512, height: 512}, scene);
-        const ctx = groundTexture.getContext();
-        
-        // Zone Forest (moitié gauche)
-        ctx.fillStyle = "#1a4a1a";
-        ctx.fillRect(0, 0, 256, 512);
-        ctx.fillStyle = "#2d8a2d";
-        for(let i = 0; i < 50; i++) {
-            ctx.fillRect(Math.random() * 256, Math.random() * 512, 20, 20);
-        }
-        
-        // Zone Rust (moitié droite)
-        ctx.fillStyle = "#2a2a3a";
-        ctx.fillRect(256, 0, 256, 512);
-        ctx.fillStyle = "#4a4a5a";
-        for(let i = 0; i < 30; i++) {
-            ctx.fillRect(256 + Math.random() * 256, Math.random() * 512, 30, 30);
-        }
-        
-        groundTexture.update();
-        groundMat.diffuseTexture = groundTexture;
+        groundMat.diffuseColor = new BABYLON.Color3(0.2, 0.4, 0.2);
         ground.material = groundMat;
         ground.receiveShadows = true;
         
