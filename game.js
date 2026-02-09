@@ -170,6 +170,53 @@ class GameScene extends Phaser.Scene {
             backgroundColor: '#000',
             padding: { x: 15, y: 8 }
         }).setOrigin(0.5).setScrollFactor(0).setDepth(100);
+        
+        // MINIMAP STYLE ZELDA
+        this.createMinimap();
+    }
+    
+    createMinimap() {
+        const mapX = 880;
+        const mapY = 100;
+        const mapW = 120;
+        const mapH = 80;
+        
+        // Fond de la minimap
+        this.minimapBg = this.add.rectangle(mapX, mapY, mapW, mapH, 0x000000, 0.7)
+            .setStrokeStyle(2, 0x00ff41)
+            .setScrollFactor(0)
+            .setDepth(100);
+        
+        // Titre minimap
+        this.add.text(mapX, mapY - 50, 'MAP', {
+            fontSize: '14px',
+            color: '#00ff41'
+        }).setOrigin(0.5).setScrollFactor(0).setDepth(100);
+        
+        // Zone Forest (gauche)
+        this.minimapForest = this.add.rectangle(mapX - 30, mapY, 50, 70, 0x2d5a2d, 0.8)
+            .setScrollFactor(0).setDepth(100);
+        
+        // Zone Rust (droite)
+        this.minimapRust = this.add.rectangle(mapX + 25, mapY, 50, 70, 0x8b4513, 0.8)
+            .setScrollFactor(0).setDepth(100);
+        
+        // Passage entre zones
+        this.minimapPass = this.add.rectangle(mapX - 2, mapY, 10, 25, 0x444444, 0.9)
+            .setScrollFactor(0).setDepth(100);
+        
+        // Position joueur sur minimap
+        this.minimapPlayer = this.add.circle(mapX, mapY, 4, 0x00ff41)
+            .setScrollFactor(0)
+            .setDepth(101);
+        
+        // Marqueur porte
+        this.minimapDoor = this.add.triangle(mapX + 45, mapY, 0, -5, -4, 3, 4, 3, 0xffaa00)
+            .setScrollFactor(0)
+            .setDepth(101);
+        
+        // Marqueurs clés
+        this.minimapKeys = [];
     }
     
     createWorld() {
@@ -207,6 +254,11 @@ class GameScene extends Phaser.Scene {
     }
     
     spawnKeys(count) {
+        const mapX = 880;
+        const mapY = 100;
+        const worldW = 3840;
+        const worldH = 2560;
+        
         for(let i = 0; i < count; i++) {
             const x = Phaser.Math.Between(200, 3600);
             const y = Phaser.Math.Between(200, 2300);
@@ -219,6 +271,17 @@ class GameScene extends Phaser.Scene {
                 yoyo: true,
                 repeat: -1
             });
+            
+            // Ajouter marqueur sur minimap
+            const keyMapX = mapX - 30 + ((x / (worldW / 2)) * 50) - 25;
+            const keyMapY = mapY + ((y / worldH) * 70) - 35;
+            const keyMarker = this.add.circle(
+                Phaser.Math.Clamp(keyMapX, mapX - 55, mapX + 50),
+                Phaser.Math.Clamp(keyMapY, mapY - 35, mapY + 35),
+                2, 0xffaa00
+            ).setScrollFactor(0).setDepth(101);
+            
+            key.setData('minimapMarker', keyMarker);
         }
     }
     
@@ -249,6 +312,23 @@ class GameScene extends Phaser.Scene {
         this.enemies.getChildren().forEach(enemy => {
             this.updateEnemy(enemy);
         });
+        
+        // Update minimap
+        this.updateMinimap();
+    }
+    
+    updateMinimap() {
+        const mapX = 880;
+        const mapY = 100;
+        const worldW = 3840;
+        const worldH = 2560;
+        
+        // Convertir position joueur monde → minimap
+        const playerMapX = mapX - 30 + ((this.player.x / (worldW / 2)) * 50) - 25;
+        const playerMapY = mapY + ((this.player.y / worldH) * 70) - 35;
+        
+        this.minimapPlayer.x = Phaser.Math.Clamp(playerMapX, mapX - 55, mapX + 50);
+        this.minimapPlayer.y = Phaser.Math.Clamp(playerMapY, mapY - 35, mapY + 35);
     }
     
     updateEnemy(enemy) {
@@ -307,6 +387,10 @@ class GameScene extends Phaser.Scene {
     }
     
     collectKey(player, key) {
+        // Supprimer marqueur minimap
+        const marker = key.getData('minimapMarker');
+        if(marker) marker.destroy();
+        
         key.destroy();
         this.player.keys++;
         this.keysText.setText(`Keys: ${this.player.keys}/3`);
