@@ -25,12 +25,12 @@
 - [x] Mission text
 - [x] Controls display
 
-## Phase 5: GitHub Deployment 🔄 **URGENT**
-- [ ] Créer repo GitHub
-- [ ] Configurer remote origin
-- [ ] Push master branch
-- [ ] Activer GitHub Pages
-- [ ] Tester URL deploy
+## Phase 5: GitHub Deployment ✅
+- [x] Créer repo GitHub
+- [x] Configurer remote origin
+- [x] Push main branch
+- [x] Activer GitHub Pages
+- [x] Tester URL deploy: https://pokso-ux.github.io/pokso-hunter-v3/
 
 ## Phase 6: Polish (optionnel)
 - [ ] Audio (music loop, SFX)
