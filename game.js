@@ -34,8 +34,13 @@ window.addEventListener('DOMContentLoaded', function() {
         const gl = new BABYLON.GlowLayer("glow", scene);
         gl.intensity = 0.8;
         
+        // Directional light pour ombres
+        const dirLight = new BABYLON.DirectionalLight("dir", new BABYLON.Vector3(-1, -2, -1), scene);
+        dirLight.position = new BABYLON.Vector3(20, 40, 20);
+        dirLight.intensity = 0.7;
+        
         // ShadowGenerator pour ombres réalistes
-        const shadowGenerator = new BABYLON.ShadowGenerator(2048, hemiLight);
+        const shadowGenerator = new BABYLON.ShadowGenerator(2048, dirLight);
         shadowGenerator.useBlurExponentialShadowMap = true;
         shadowGenerator.blurKernel = 32;
         
